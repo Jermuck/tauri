@@ -8,6 +8,10 @@ import { ResponseInterceptor } from './infrastructure/common/interceptors/respon
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    credentials: true,
+    origin: 'http://localhost:1420'
+  })
   const envconfig = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix("/api");

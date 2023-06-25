@@ -37,9 +37,9 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "desktop",
-        "width": 900,
-        "height": 700
+        "title": "chat-app",
+        "width": 1280,
+        "height": 920
       }
     ]
   }

@@ -12,8 +12,10 @@
   "license": "MIT",
   "dependencies": {
     "@hope-ui/solid": "^0.6.7",
+    "@solidjs/router": "^0.8.2",
     "@stitches/core": "^1.2.8",
     "@tauri-apps/api": "^1.4.0",
+    "axios": "^1.4.0",
     "solid-js": "^1.7.0",
     "solid-transition-group": "^0.0.10"
   },
