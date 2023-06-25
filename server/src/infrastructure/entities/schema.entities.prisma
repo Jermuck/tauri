@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserEntity {
+  id          Int          @id @unique @default(autoincrement())
+  username    String
+  password    String
+  email       String       @unique
+  updateDate  DateTime     @updatedAt
+  createDate  DateTime     @default(now())
+  description String?
+  token       TokenEntity?
+}
+
+model TokenEntity {
+  id     Int         @unique @default(autoincrement())
+  token  String
+  userId Int?        @unique
+  user   UserEntity? @relation(fields: [userId], references: [id])
+}
