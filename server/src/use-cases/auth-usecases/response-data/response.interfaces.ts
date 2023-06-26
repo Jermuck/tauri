@@ -33,11 +33,4 @@ export namespace ResultAuthorization {
     @ApiProperty()
     public message: string;
   };
-
-  export class Refresh {
-    @ApiProperty()
-    public access: string;
-
-    public header: string;
-  };
 }

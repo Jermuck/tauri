@@ -82,7 +82,7 @@ export class AuthUseCase {
     return { message: "Logout success" };
   };
 
-  public async refresh(token: string): Promise<ResultAuthorization.Refresh> {
+  public async refresh(token: string): Promise<ResultAuthorization.ResponseForAuthRequest> {
     const payload = this.JwtService.validateToken(token);
     if (!payload) throw new UnauthorizedException();
     const tokenWithRelation = await this.TokenRepository.getByUserId(payload.id);
@@ -91,6 +91,7 @@ export class AuthUseCase {
     const [access, refresh] = this.generateTokens({ ...user });
     await this.TokenRepository.update(tokenWithRelation.id, refresh);
     const header = this.generateHeader(refresh);
-    return { access, header };
+    const resultOfUser = this.createReponseUser(user);
+    return { access, header, user: resultOfUser };
   };
 };

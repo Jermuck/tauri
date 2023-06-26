@@ -63,13 +63,13 @@ export class AuthController {
   @HttpCode(200)
   @ApiOperation({ description: "Refresh" })
   @ApiResponse({
-    type: ResultAuthorization.Refresh,
+    type: ResultAuthorization.ResponseForAuthRequest,
     status: 200
   })
   @ApiCookieAuth()
   public async refresh(@Request() req: Req) {
-    const { access, header } = await this.AuthorizationUseCaseInstanse.refresh(req.cookies["Refresh"]);
+    const { access, header, user } = await this.AuthorizationUseCaseInstanse.refresh(req.cookies["Refresh"]);
     req.res.setHeader("Set-Cookie", header);
-    return { access };
+    return { access, user };
   };
 }

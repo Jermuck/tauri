@@ -18,4 +18,8 @@ export class AuthController {
       email, password, username
     });
   };
+
+  public async refresh(): Promise<AxiosResponse<IAuthorizationReponse>> {
+    return await $api.get<IAuthorizationReponse>('/auth/refresh');
+  };
 };
