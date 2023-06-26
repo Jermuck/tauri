@@ -1,10 +1,13 @@
-import { createSignal } from "solid-js";
 import { Box } from "@hope-ui/solid";
+import { createSignal } from "solid-js";
 import { SignIn } from "../../components/SignIn/SignIn";
 import { SignUp } from "../../components/SignUp/SignUp";
 
+export type ISign = "SignUp" | "SignIn";
+
 export const AuthPage = () => {
-  const [getValue, setValue] = createSignal<string | null>(null);
+  const [getModal, setModal] = createSignal<ISign>("SignUp");
+
   return (
     <Box
       backgroundColor={'#252838'}
@@ -14,7 +17,11 @@ export const AuthPage = () => {
       justifyContent={'center'}
       alignItems={'center'}
     >
-      <SignUp />
+      {
+        getModal() === 'SignUp' ?
+          <SignUp change={setModal} />
+          : <SignIn change={setModal} />
+      }
     </Box>
   )
 };

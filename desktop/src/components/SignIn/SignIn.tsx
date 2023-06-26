@@ -1,29 +1,17 @@
 import { Box, Text } from "@hope-ui/solid"
-import { createSignal } from "solid-js"
+import { Component, createSignal } from "solid-js"
 import { CustomButton } from "../../UI/CustomButton/CustomButton";
 import { InputWithTitle } from "../../UI/InputWithTitle/InputWithTitle"
 import { isEmail, isLength } from "./validation/validation";
 import { AuthController } from "../../http/controllers/AuthController/auth.controller";
 import { useNavigate } from "@solidjs/router";
+import { useLogin } from "./HttpHookForLogin/http.hook";
+import { ISignChange } from "../../../types/index.types";
 
-export const SignIn = () => {
+export const SignIn: Component<ISignChange> = ({ change }) => {
   const [getEmail, setEmail] = createSignal<string | null>(null);
   const [getPassword, setPassword] = createSignal<string | null>(null);
-  const [getError, setError] = createSignal<string | null>(null);
-  const navigate = useNavigate();
-
-  async function authorizate(): Promise<void> {
-    if (!isEmail(getEmail()) || !isLength(getPassword())) {
-      setError('Incorrect form');
-      setTimeout(() => setError(null), 2000)
-      return;
-    };
-    const instance = AuthController.getInstance();
-    //@ts-ignore
-    const response = await instance.login(getEmail(), getPassword());
-    console.log(response.data.data.user);
-    navigate('/home');
-  }
+  const { getError, login } = useLogin();
 
   return (
     <Box
@@ -62,7 +50,8 @@ export const SignIn = () => {
         width={280}
         height={38}
         mt={132}
-        onClick={authorizate}
+        //@ts-ignore
+        onClick={() => login(getEmail(), getPassword())}
       />
       <Text
         backgroundColor={'transparent'}
@@ -70,6 +59,7 @@ export const SignIn = () => {
         cursor={"pointer"}
         color={'#E2E2E4'}
         marginTop={10}
+        onClick={() => change("SignUp")}
       >Create account</Text>
     </Box>
   )

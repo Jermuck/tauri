@@ -1,33 +1,13 @@
-import { Box, Text, Button } from "@hope-ui/solid";
-import { createSignal } from "solid-js";
+import { Box, Text } from "@hope-ui/solid";
+import { Component, createSignal } from "solid-js";
 import { CustomButton } from "../../UI/CustomButton/CustomButton";
 import { InputWithTitle } from "../../UI/InputWithTitle/InputWithTitle";
-import { IUser } from "../../../types/index.types";
-import { isEmail, isLength } from "../SignIn/validation/validation";
-import { AuthController } from "../../http/controllers/AuthController/auth.controller";
+import { ISignChange, IUser } from "../../../types/index.types";
+import { useRegister } from "./HtttpHookForRegistration/http.hook";
 
-export const SignUp = () => {
+export const SignUp: Component<ISignChange> = ({ change }) => {
   const [getUser, setUser] = createSignal<IUser>({} as IUser);
-  const [getError, setError] = createSignal<string | null>(null);
-
-  async function register(): Promise<void> {
-    const { username, email, password } = getUser();
-    const isValidForm = !isEmail(email) || !isLength(username) || !isLength(password);
-    if (isValidForm) {
-      setError('Incorrect form');
-      setTimeout(() => setError(null), 2000)
-      return;
-    };
-    const instance = AuthController.getInstance();
-    const response = await instance.register(email, password, username);
-    if (response.status === 400) {
-      setError('This email already exist');
-      setTimeout(() => setError(null), 2000);
-      return;
-    };
-    console.log(response.data.data.user);
-  };
-
+  const { getError, register } = useRegister();
   return (
     <Box
       width={380}
@@ -45,7 +25,7 @@ export const SignUp = () => {
         fontSize={28}
         textAlign={'center'}
         marginTop={57}
-      >Sign In</Text>
+      >Sign Up</Text>
       <InputWithTitle
         width={280}
         mt={30}
@@ -71,7 +51,7 @@ export const SignUp = () => {
         width={280}
         height={38}
         mt={100}
-        onClick={register}
+        onClick={() => register(getUser())}
       />
       <Text
         backgroundColor={'transparent'}
@@ -79,6 +59,7 @@ export const SignUp = () => {
         cursor={"pointer"}
         color={'#E2E2E4'}
         marginTop={10}
+        onClick={() => change("SignIn")}
       >Sign In</Text>
     </Box>
   )
