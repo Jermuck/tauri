@@ -11,7 +11,6 @@ export const useUpdate = (): funcUpdate => {
 
   async function update(): Promise<void> {
     try {
-      console.log("Da");
       const token = localStorage.getItem('access');
       if (!token) return;
       const instance = AuthController.getInstance();
@@ -19,7 +18,7 @@ export const useUpdate = (): funcUpdate => {
       //@ts-ignore
       setUser(data.data.user);
       localStorage.setItem('access', data.data.access);
-      nav('/home');
+      nav('/profile');
     } catch (err) {
       //@ts-ignore
       setUser({} as IUser);

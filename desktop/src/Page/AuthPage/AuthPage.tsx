@@ -11,10 +11,12 @@ export const AuthPage = () => {
   const [getModal, setModal] = createSignal<ISign>("SignUp");
   const [user, _] = useUserFromStore();
   const nav = useNavigate();
+
   onMount(() => {
     //@ts-ignore
-    if (user.username) nav('/home');
-  })
+    if (user.username) nav('/profile');
+  });
+
   return (
     <Box
       backgroundColor={'#252838'}

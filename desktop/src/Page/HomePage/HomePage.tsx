@@ -8,9 +8,7 @@ export const HomePage = () => {
   const nav = useNavigate();
   onMount(() => {
     //@ts-ignore
-    if (!user.username) {
-      nav('/');
-    }
+    if (!user.username) nav('/');
   })
   return (
     <Box color={"red"} width={'100%'} height={'100vh'}>{JSON.stringify(user)}</Box>
