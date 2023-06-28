@@ -1,17 +1,20 @@
 import { UserRepository } from "./users-repository/users.reposiory";
-import { TokensRepository } from "./tokens-repository/tokens.repository";
+import { TokenRepository } from "./tokens-repository/tokens.repository";
 import { Module } from "@nestjs/common"
 import { PrismaService } from "../config/prisma.config";
+import { ProfileReposiory } from "./profile-repository/profile.repository";
 
 @Module({
   providers: [
     UserRepository,
-    TokensRepository,
+    TokenRepository,
     PrismaService,
+    ProfileReposiory
   ],
   exports: [
     UserRepository,
-    TokensRepository,
+    TokenRepository,
+    ProfileReposiory
   ]
 })
 export class RepositoryModule { };

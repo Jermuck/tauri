@@ -16,6 +16,7 @@ model UserEntity {
   createDate  DateTime     @default(now())
   description String?
   token       TokenEntity?
+  profile  ProfileEntity?
 }
 
 model TokenEntity {
@@ -23,4 +24,13 @@ model TokenEntity {
   token  String
   userId Int?        @unique
   user   UserEntity? @relation(fields: [userId], references: [id])
+}
+
+model ProfileEntity {
+  id     Int         @unique @default(autoincrement())
+  name String?
+  lastname String?
+  phone String?
+  user UserEntity @relation(fields:[userId], references: [id])
+  userId Int @unique
 }

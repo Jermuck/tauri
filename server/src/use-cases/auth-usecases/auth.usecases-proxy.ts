@@ -1,5 +1,5 @@
 import { DynamicModule, Module } from "@nestjs/common";
-import { TokensRepository } from "src/infrastructure/repositories/tokens-repository/tokens.repository";
+import { TokenRepository } from "src/infrastructure/repositories/tokens-repository/tokens.repository";
 import { UserRepository } from "src/infrastructure/repositories/users-repository/users.reposiory";
 import { AuthUseCase } from "./usecase-blocks/auth.usecase";
 import { RepositoryModule } from "src/infrastructure/repositories/repository.module";
@@ -18,10 +18,10 @@ export class AuthUseCaseModule {
       module: AuthUseCase,
       providers: [
         {
-          inject: [UserRepository, TokensRepository, BcryptService, JwtAdapter, ConfigService],
+          inject: [UserRepository, TokenRepository, BcryptService, JwtAdapter, ConfigService],
           useFactory: (
             userRepo: UserRepository,
-            tokenRepo: TokensRepository,
+            tokenRepo: TokenRepository,
             bcrypt: BcryptService,
             jwt: JwtAdapter,
             config: ConfigService

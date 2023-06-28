@@ -4,7 +4,7 @@ import { TokenAbstractRepository } from "src/domain/repositories/token-repositor
 import { PrismaService } from "src/infrastructure/config/prisma.config";
 
 @Injectable()
-export class TokensRepository implements TokenAbstractRepository {
+export class TokenRepository implements TokenAbstractRepository {
   constructor(
     private readonly prisma: PrismaService
   ) { };
