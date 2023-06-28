@@ -2,9 +2,6 @@ import { Box, Text } from "@hope-ui/solid"
 import { Component, createSignal } from "solid-js"
 import { CustomButton } from "../../UI/CustomButton/CustomButton";
 import { InputWithTitle } from "../../UI/InputWithTitle/InputWithTitle"
-import { isEmail, isLength } from "./validation/validation";
-import { AuthController } from "../../http/controllers/AuthController/auth.controller";
-import { useNavigate } from "@solidjs/router";
 import { useLogin } from "./HttpHookForLogin/http.hook";
 import { ISignChange } from "../../../types/index.types";
 

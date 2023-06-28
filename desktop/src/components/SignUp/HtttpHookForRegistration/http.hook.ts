@@ -1,10 +1,10 @@
-import { AxiosError, IUser, IUserModel } from "../../../../types/index.types";
+import { AxiosError, IUserModel } from "../../../../types/index.types";
 import { AuthController } from "../../../http/controllers/AuthController/auth.controller";
 import { isLength, isEmail } from "../../SignIn/validation/validation";
 import { Accessor, createSignal } from "solid-js";
-import { } from "effector";
-import { useUserFromStore } from "../../../../store/UserStore/user.store";
 import { useNavigate } from "@solidjs/router";
+import { setUser } from "../../../../store/UserStore/user.store";
+
 interface IRegisterHook {
   getError: Accessor<string | null>;
   register: (user: IUserModel) => Promise<void>;
@@ -12,7 +12,6 @@ interface IRegisterHook {
 
 export function useRegister(): IRegisterHook {
   const [getError, setError] = createSignal<string | null>(null);
-  const [_, setUser] = useUserFromStore();
   const nav = useNavigate();
 
   async function showError(message: string): Promise<void> {
@@ -31,9 +30,8 @@ export function useRegister(): IRegisterHook {
       const instance = AuthController.getInstance();
       const response = await instance.register(email, password, username);
       localStorage.setItem('access', response.data.data.access);
-      //@ts-ignore
       setUser(response.data.data.user);
-      nav('/home')
+      nav('/profile')
     } catch (err: any) {
       const { response } = err as AxiosError;
       if (response.data.statusCode === 400) {

@@ -1,10 +1,10 @@
-import { Box, Image } from "@hope-ui/solid"
-import { Component, createEffect, createSignal, onMount } from "solid-js"
+import { Box, Image } from "@hope-ui/solid";
+import { Component, createEffect, createSignal } from "solid-js";
 import Union from "./images/Union.svg";
+import { getAvatar, setAvatar } from "../../../store/ChangeAvatarStore/avatar.store";
 
 export const AvatarChange = () => {
   const [isShow, setIsShow] = createSignal<boolean>(false);
-
   return (
     <Box
       width={140}
@@ -15,12 +15,11 @@ export const AvatarChange = () => {
       display={'flex'}
       justifyContent={'center'}
       alignItems={'center'}
-      marginTop={60}
       onMouseEnter={() => setIsShow(true)}
       onMouseLeave={() => setIsShow(false)}
       position={'relative'}
     >
-      <Image src={Union} opacity={isShow() ? '90' : ''} />
+      <Image src={Union} opacity={getAvatar() ? '90' : ''} />
       {
         isShow() && <Box
           position={'absolute'}
@@ -30,6 +29,8 @@ export const AvatarChange = () => {
           fontWeight={'700'}
           fontSize={18}
           cursor={'pointer'}
+          //@ts-ignore
+          onClick={() => setAvatar(true)}
         >
           Change
           Avatar

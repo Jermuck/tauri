@@ -40,7 +40,8 @@ export class AuthUseCase {
 
   public async register(data: UserRegisterDto): Promise<ResultAuthorization.ResponseForAuthRequest> {
     const validate = await this.UserRepository.getByEmail(data.email);
-    if (validate) {
+    const isUniqueUsername = await this.UserRepository.getByUsername(data.username);
+    if (validate || isUniqueUsername) {
       throw new BadRequestException("This user already login");
     }
     const hashPassword = await this.bcrypt.hash(data.password);

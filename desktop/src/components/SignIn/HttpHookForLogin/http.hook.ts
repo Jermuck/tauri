@@ -2,8 +2,8 @@ import { Accessor, createSignal } from "solid-js";
 import { isEmail, isLength } from "../validation/validation";
 import { AuthController } from "../../../http/controllers/AuthController/auth.controller";
 import { AxiosError } from "../../../../types/index.types";
-import { useUserFromStore } from "../../../../store/UserStore/user.store";
 import { useNavigate } from "@solidjs/router";
+import { setUser } from "../../../../store/UserStore/user.store";
 
 interface ILoginHook {
   getError: Accessor<string | null>;
@@ -12,7 +12,6 @@ interface ILoginHook {
 
 export function useLogin(): ILoginHook {
   const [getError, setError] = createSignal<string | null>(null);
-  const [_, setUser] = useUserFromStore();
   const nav = useNavigate();
 
   async function showError(message: string): Promise<void> {
@@ -30,9 +29,8 @@ export function useLogin(): ILoginHook {
       //@ts-ignore
       const response = await instance.login(email, password);
       localStorage.setItem('access', response.data.data.access);
-      //@ts-ignore
       setUser(response.data.data.user);
-      nav('/home')
+      nav('/profile')
     } catch (err) {
       const { response } = err as AxiosError;
       if (response.data.statusCode === 400) {

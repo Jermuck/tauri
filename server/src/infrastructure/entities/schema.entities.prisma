@@ -9,7 +9,7 @@ datasource db {
 
 model UserEntity {
   id          Int          @id @unique @default(autoincrement())
-  username    String
+  username    String       @unique()
   password    String
   email       String       @unique
   updateDate  DateTime     @updatedAt

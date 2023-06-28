@@ -22,4 +22,8 @@ export class AuthController {
   public async refresh(): Promise<AxiosResponse<IAuthorizationReponse>> {
     return await $api.get<IAuthorizationReponse>('/auth/refresh');
   };
+
+  public async logout(): Promise<AxiosResponse<void>> {
+    return $api.post<void>('/auth/logout');
+  }
 };

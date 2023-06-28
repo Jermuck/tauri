@@ -32,5 +32,11 @@ export class UserRepository implements UserAbstractReposiotory {
       where: { id }
     });
     return isDelete ? true : false;
-  }
+  };
+
+  public async getByUsername(username: string): Promise<UserEntity> {
+    return await this.prisma.userEntity.findUnique({
+      where: { username }
+    })
+  };
 }
