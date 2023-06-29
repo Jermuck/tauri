@@ -1,15 +1,20 @@
-import { Length } from "class-validator";
-import { ProfileModel } from "src/domain/models/ProfileModel/profile.model";
+import { ApiProperty } from "@nestjs/swagger";
+import { Length, IsOptional } from "class-validator";
 import { BodyCanActivate } from "../../auth/dto/user.register.dto";
 
-export class ProfileDto extends BodyCanActivate
-  implements Omit<ProfileModel, "userId">{
-  @Length(4, 28)
-  public readonly name: string;
+export class ProfileDto extends BodyCanActivate {
+  @Length(6, 28)
+  @IsOptional()
+  @ApiProperty({ required: false })
+  public readonly name?: string;
 
-  @Length(4, 28)
-  public readonly lastname: string;
+  @Length(6, 28)
+  @IsOptional()
+  @ApiProperty({ required: false })
+  public readonly lastname?: string;
 
-  @Length(9, 9)
-  public readonly phone: string;
+  @Length(8, 14)
+  @IsOptional()
+  @ApiProperty({ required: false })
+  public readonly phone?: string;
 }
