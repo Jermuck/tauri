@@ -1,5 +1,5 @@
 import { Box, Text } from "@hope-ui/solid";
-import { getAvatar } from "../../../store/ChangeAvatarStore/avatar.store";
+import { useNavigate } from "@solidjs/router";
 import { getUser } from "../../../store/UserStore/user.store";
 import { AvatarChange } from "../../UI/AvatarChange/AvatarChange";
 import { SettingItem } from "../../UI/SettingItem/SettingItem";
@@ -8,6 +8,7 @@ import { useLogout } from "./HttpHookForLogout/http.hook";
 
 export const SettingsForm = () => {
   const logout = useLogout();
+  const nav = useNavigate();
   return (
     <Box
       display={'flex'}
@@ -18,10 +19,6 @@ export const SettingsForm = () => {
       height={800}
       position={'relative'}
     >
-      {
-        //@ts-ignore
-        getAvatar().isOpen && <ModalChangeAvatar />
-      }
       <Box display={'flex'} flexDirection={'column'} alignItems={"center"}>
         <AvatarChange />
         <Text
@@ -30,7 +27,7 @@ export const SettingsForm = () => {
           fontWeight={600}
           marginTop={31}
         >
-          { //@ts-ignore
+          {//@ts-ignore
             getUser().username
           }
         </Text>
@@ -75,6 +72,7 @@ export const SettingsForm = () => {
           value={''}
           mt={10}
           colorTitle={'#3369F3'}
+          onClick={() => nav('/profile/password')}
         />
         <SettingItem
           title={'Logout'}

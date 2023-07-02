@@ -14,7 +14,7 @@ export function useRegister(): IRegisterHook {
   const [getError, setError] = createSignal<string | null>(null);
   const nav = useNavigate();
 
-  async function showError(message: string): Promise<void> {
+  function showError(message: string): void {
     setError(message);
     setTimeout(() => { setError(null) }, 2000);
   };
@@ -24,18 +24,18 @@ export function useRegister(): IRegisterHook {
       const { username, email, password } = user;
       const isValidForm = !isEmail(email) || !isLength(username) || !isLength(password);
       if (isValidForm) {
-        await showError('Incorrect form');
+        showError('Incorrect form');
         return;
       };
       const instance = AuthController.getInstance();
       const response = await instance.register(email, password, username);
       localStorage.setItem('access', response.data.data.access);
       setUser(response.data.data.user);
-      nav('/profile')
+      nav('/profile');
     } catch (err: any) {
       const { response } = err as AxiosError;
       if (response.data.statusCode === 400) {
-        await showError(response.data.message);
+        showError(response.data.message);
       }
     }
   };

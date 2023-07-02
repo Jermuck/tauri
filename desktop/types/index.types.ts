@@ -11,7 +11,8 @@ export interface IUser extends IUserModel {
   updateDate: Date;
   createData: Date;
 }
-export interface IAuthorizationReponse {
+
+export interface IAuthorizationResponse {
   data: {
     access: string;
     user: IUser;
@@ -27,6 +28,15 @@ export interface AxiosError {
     }
   }
 };
+
+export interface IPasswordRequestBody {
+  password: string;
+  newPassword: string;
+}
+
+export interface IPasswordResponse {
+  data: IPasswordResponse
+}
 
 export interface ISignChange {
   change: (type: ISign) => void;

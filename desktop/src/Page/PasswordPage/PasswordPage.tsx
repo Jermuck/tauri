@@ -1,10 +1,12 @@
 import { Box, Image } from "@hope-ui/solid";
+import { useNavigate } from "@solidjs/router";
 import { getAvatar } from "../../../store/ChangeAvatarStore/avatar.store";
 import { ModalChangeAvatar } from "../../components/ModalChangeAvatar/ModalChangeAvatar";
-import { SettingsForm } from "../../components/SettingsForm/SettingsForm";
-import Path from "./icons/path.svg";
+import { SettingsPassword } from "../../components/SettingsPassword/SettingsPassword";
+import Path from "../ProfilePage/icons/path.svg";
 
-export const ProfilePage = () => {
+export const PasswordPage = () => {
+  const nav = useNavigate();
   return (
     <Box
       width={'100%'}
@@ -20,12 +22,16 @@ export const ProfilePage = () => {
         alignItems={'center'}
         justifyContent={'center'}
       >
-        <Image src={Path} width={38} height={38} />
+        <Image
+          src={Path}
+          width={38}
+          height={38}
+          cursor={'pointer'}
+          onClick={() => nav('/profile')}
+        />
       </Box>
-      <SettingsForm />
-      {
-        getAvatar().isOpen && <ModalChangeAvatar />
-      }
+      <SettingsPassword />
+      {getAvatar().isOpen && <ModalChangeAvatar />}
     </Box >
   )
 }

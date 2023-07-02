@@ -14,7 +14,7 @@ export function useLogin(): ILoginHook {
   const [getError, setError] = createSignal<string | null>(null);
   const nav = useNavigate();
 
-  async function showError(message: string): Promise<void> {
+  function showError(message: string): void {
     setError(message);
     setTimeout(() => { setError(null) }, 2000);
   };
@@ -22,7 +22,7 @@ export function useLogin(): ILoginHook {
   async function login(email: string, password: string): Promise<void> {
     try {
       if (!isEmail(email) || !isLength(password)) {
-        await showError("Incorrect form");
+        showError("Incorrect form");
         return;
       };
       const instance = AuthController.getInstance();
@@ -34,7 +34,7 @@ export function useLogin(): ILoginHook {
     } catch (err) {
       const { response } = err as AxiosError;
       if (response.data.statusCode === 400) {
-        await showError(response.data.message);
+        showError(response.data.message);
       }
     }
   };

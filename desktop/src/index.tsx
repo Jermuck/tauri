@@ -9,6 +9,7 @@ import { useUpdate } from "./hooks/HttpUpdateTokenHook/http.update";
 import { onMount } from "solid-js";
 import { ProfilePage } from "./Page/ProfilePage/ProfilePage";
 import { getUser } from "../store/UserStore/user.store";
+import { PasswordPage } from "./Page/PasswordPage/PasswordPage";
 
 const GlobalRouter = () => {
   const update = useUpdate();
@@ -22,6 +23,7 @@ const GlobalRouter = () => {
       <Route element={getUser() ? <Navigate href={'/home'} /> : <AuthPage />} path='/' />
       <Route element={!getUser() ? <Navigate href={'/'} /> : <HomePage />} path='/home' />
       <Route element={!getUser() ? <Navigate href={'/'} /> : <ProfilePage />} path='/profile' />
+      <Route element={!getUser() ? <Navigate href={'/'} /> : <PasswordPage />} path='/profile/password' />
     </>
   )
 }

@@ -1,7 +1,7 @@
 import { Box, Text } from "@hope-ui/solid";
 import { Component } from "solid-js";
 
-interface IProps {
+export interface IProps {
   title: string;
   value?: string;
   mt?: number;
