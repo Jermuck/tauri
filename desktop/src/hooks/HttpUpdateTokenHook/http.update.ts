@@ -4,7 +4,7 @@ import { AuthController } from "../../http/controllers/AuthController/auth.contr
 
 type funcUpdate = () => Promise<void>;
 
-export const useUpdate = (): funcUpdate => {
+export const useUpdateToken = (): funcUpdate => {
   const nav = useNavigate();
 
   async function update(): Promise<void> {
@@ -17,7 +17,6 @@ export const useUpdate = (): funcUpdate => {
       localStorage.setItem('access', data.data.access);
       nav('/profile');
     } catch (err) {
-      //@ts-ignore
       setUser(null);
       localStorage.removeItem('access');
     }

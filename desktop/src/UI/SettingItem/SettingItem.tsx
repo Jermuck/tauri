@@ -3,7 +3,7 @@ import { Component } from "solid-js";
 
 export interface IProps {
   title: string;
-  value?: string;
+  value?: string | null;
   mt?: number;
   isLine?: boolean;
   colorTitle?: string;

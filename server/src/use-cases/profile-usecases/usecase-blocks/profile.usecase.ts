@@ -4,6 +4,7 @@ import { BcryptAbstractAdapter } from "src/domain/adapters/bcrypt-adapter/bcrypt
 import { ProfileModel } from "src/domain/models/ProfileModel/profile.model";
 import { ProfileAbstractRepository } from "src/domain/repositories/profile-repository/profile-repository.abstract";
 import { UserAbstractReposiotory } from "src/domain/repositories/user-repository/user-repository.abstract";
+import { BodyCanActivate } from "src/infrastructure/controllers/auth/dto/user.register.dto";
 import { ChangePasswordDto } from "src/infrastructure/controllers/profile/dto/changePassword.dto";
 import { ProfileDto } from "src/infrastructure/controllers/profile/dto/profile.dto";
 import { ResultProfile } from "../response-data/response.interfaces";
@@ -44,5 +45,10 @@ export class ProfileUseCase {
     const hashPassword = await this.bcrypt.hash(data.newPassword);
     const updateUser = await this.userRepo.updatePassword(data._id, hashPassword);
     return { password: data.newPassword };
+  };
+
+
+  public async get(data: BodyCanActivate): Promise<ProfileEntity | null> {
+    return this.profileRepo.getByUserId(data._id);
   };
 }

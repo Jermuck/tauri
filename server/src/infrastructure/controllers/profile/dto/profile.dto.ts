@@ -3,12 +3,12 @@ import { Length, IsOptional } from "class-validator";
 import { BodyCanActivate } from "../../auth/dto/user.register.dto";
 
 export class ProfileDto extends BodyCanActivate {
-  @Length(6, 28)
+  @Length(5, 28)
   @IsOptional()
   @ApiProperty({ required: false })
   public readonly name?: string;
 
-  @Length(6, 28)
+  @Length(5, 28)
   @IsOptional()
   @ApiProperty({ required: false })
   public readonly lastname?: string;

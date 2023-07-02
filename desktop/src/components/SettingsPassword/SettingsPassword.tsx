@@ -24,7 +24,6 @@ export const SettingsPassword = () => {
       width={'100%'}
       height={800}
       position={'relative'}
-
     >
       <AvatarChange />
       <Box
@@ -45,6 +44,7 @@ export const SettingsPassword = () => {
         <PasswordChangeInput
           title={'Repeat new password'}
           mt={10}
+          isLine={false}
           onChange={value => setPassword({ ...getPassword(), repeatPassword: value })}
         />
       </Box>

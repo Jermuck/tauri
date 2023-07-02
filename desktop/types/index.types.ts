@@ -17,7 +17,7 @@ export interface IAuthorizationResponse {
     access: string;
     user: IUser;
   }
-};
+}
 
 export interface AxiosError {
   response: {
@@ -27,7 +27,7 @@ export interface AxiosError {
       error: string;
     }
   }
-};
+}
 
 export interface IPasswordRequestBody {
   password: string;
@@ -40,4 +40,16 @@ export interface IPasswordResponse {
 
 export interface ISignChange {
   change: (type: ISign) => void;
+}
+
+export interface IProfile {
+  id: number;
+  name: string | null;
+  lastname: string | null;
+  phone: string | null;
+  userId: number;
+};
+
+export interface IProfileResponse {
+  data: IProfile;
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, HttpCode, Inject, Post, UseGuards, UsePipes } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, Inject, Post, UseGuards, UsePipes } from "@nestjs/common";
 import { AuthGuard } from "src/infrastructure/common/guards/auth.guard";
 import { ProfileUseCase } from "src/use-cases/profile-usecases/usecase-blocks/profile.usecase";
 import { ProfileDto } from "./dto/profile.dto";
@@ -8,6 +8,7 @@ import { ResultProfile } from "src/use-cases/profile-usecases/response-data/resp
 import { ValidatioPipe } from "src/infrastructure/common/pipes/validation.pipe";
 import { ProfileEntity } from "@prisma/client";
 import { ChangePasswordDto } from "./dto/changePassword.dto";
+import { BodyCanActivate } from "../auth/dto/user.register.dto";
 
 @Controller("/profile")
 @ApiTags("Profile")
@@ -52,4 +53,19 @@ export class ProfileController {
     const user = await this.ProfileUseCaseInstance.changePassword(dto);
     return user;
   }
+
+  @Get()
+  @HttpCode(200)
+  @ApiOperation({
+    description: "Get profile"
+  })
+  @ApiResponse({
+    type: ResultProfile.ResponseProfile,
+    status: 200
+  })
+  @ApiBearerAuth("access-token")
+  @UseGuards(AuthGuard)
+  public async get(@Body() dto: BodyCanActivate) {
+    return this.ProfileUseCaseInstance.get(dto);
+  };
 }

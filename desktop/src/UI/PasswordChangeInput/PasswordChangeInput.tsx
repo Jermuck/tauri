@@ -1,5 +1,5 @@
 import { Box, Text, Input } from "@hope-ui/solid"
-import { Component } from "solid-js";
+import { Component, createSignal } from "solid-js";
 
 interface IProps {
   title: string;
@@ -7,10 +7,13 @@ interface IProps {
   onChange: (value: string) => void;
   isLine?: boolean;
   type?: "password" | "text";
+  placeholder?: string;
+  value?: string | null;
 }
 
 export const PasswordChangeInput: Component<IProps> = ({
-  title, mt, onChange, isLine = true, type = "password"
+  title, mt, onChange, isLine = true, type = "password",
+  value = null, placeholder
 }) => {
   return (
     <Box width={560} marginTop={mt}>
@@ -31,6 +34,8 @@ export const PasswordChangeInput: Component<IProps> = ({
           size={'sm'}
           type={type}
           borderColor={'#9898B0'}
+          value={value === null ? '' : value}
+          placeholder={placeholder}
           onChange={e => onChange(e.target.value)}
         />
       </Box>

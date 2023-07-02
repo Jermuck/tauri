@@ -1,14 +1,20 @@
 import { Box, Text } from "@hope-ui/solid";
 import { useNavigate } from "@solidjs/router";
 import { getUser } from "../../../store/UserStore/user.store";
+import { useUpdateProfile } from "../../hooks/HttpUpdateProfileHook/http.hook";
 import { AvatarChange } from "../../UI/AvatarChange/AvatarChange";
 import { SettingItem } from "../../UI/SettingItem/SettingItem";
 import { ModalChangeAvatar } from "../ModalChangeAvatar/ModalChangeAvatar";
 import { useLogout } from "./HttpHookForLogout/http.hook";
+import { getProfile, setProfile } from "../../../store/ProfileStore/profile.store";
+import { onMount } from "solid-js";
 
 export const SettingsForm = () => {
   const logout = useLogout();
   const nav = useNavigate();
+  const updateProfile = useUpdateProfile();
+
+  onMount(async () => await updateProfile());
   return (
     <Box
       display={'flex'}
@@ -27,36 +33,34 @@ export const SettingsForm = () => {
           fontWeight={600}
           marginTop={31}
         >
-          {//@ts-ignore
-            getUser().username
+          {
+            getUser()?.username
           }
         </Text>
       </Box>
       <Box height={177} display={'flex'} flexDirection={'column'} justifyContent={"space-between"}>
         <SettingItem
           title={'Email'}
-          //@ts-ignore
-          value={getUser().email}
+          value={getUser()?.email}
         />
         <SettingItem
           title={'Login'}
-          //@ts-ignore
-          value={getUser().username}
+          value={getUser()?.username}
           mt={10}
         />
         <SettingItem
           title={'Name'}
-          value={'your name'}
+          value={getProfile()?.name ? getProfile()?.name : 'your name'}
           mt={10}
         />
         <SettingItem
           title={'Last name'}
-          value={'your last name'}
+          value={getProfile()?.lastname ? getProfile()?.lastname : 'your last name'}
           mt={10}
         />
         <SettingItem
           title={'Phone'}
-          value={'Your phone'}
+          value={getProfile()?.phone ? getProfile()?.phone : 'your phone'}
           mt={10}
           isLine={false}
         />
@@ -66,6 +70,7 @@ export const SettingsForm = () => {
           title={'Change data'}
           value={''}
           colorTitle={'#3369F3'}
+          onClick={() => nav('/profile/settings')}
         />
         <SettingItem
           title={'Change password'}
