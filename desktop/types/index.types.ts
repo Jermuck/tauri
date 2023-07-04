@@ -52,4 +52,8 @@ export interface IProfile {
 
 export interface IProfileResponse {
   data: IProfile;
+};
+
+export interface IUsersResponse {
+  data: IUser[];
 }

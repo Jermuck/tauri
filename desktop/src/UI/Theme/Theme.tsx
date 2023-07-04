@@ -5,6 +5,7 @@ import { getLoading } from "../../../store/LoadingStore/loading.store";
 interface ITheme {
   children: JSXElement | JSXElement[];
   background?: string | undefined;
+  jstCon?: string | undefined;
 }
 
 export const Theme: Component<ITheme> = (props) => {
@@ -16,7 +17,7 @@ export const Theme: Component<ITheme> = (props) => {
       display={'flex'}
       background={props.background ? props.background : '#252838'}
       alignItems={'center'}
-      justifyContent={'center'}
+      justifyContent={props.jstCon ? props.jstCon : 'center'}
       position={'relative'}
     >
       {getLoading()
