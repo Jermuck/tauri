@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { UserAbstractReposiotory } from "src/domain/repositories/user-repository/user-repository.abstract";
 import { PrismaService } from "src/infrastructure/config/prisma.config";
 import { Prisma, UserEntity } from "@prisma/client";
-import { GetResult } from "@prisma/client/runtime";
 
 @Injectable()
 export class UserRepository implements UserAbstractReposiotory {
@@ -45,5 +44,8 @@ export class UserRepository implements UserAbstractReposiotory {
     return await this.prisma.userEntity.update({
       where: { id: userId }, data: { password }
     })
-  }
+  };
+  public async findAll(): Promise<UserEntity[]> {
+    return await this.prisma.userEntity.findMany();
+  };
 }

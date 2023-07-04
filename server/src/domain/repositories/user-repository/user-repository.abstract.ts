@@ -5,4 +5,5 @@ export abstract class UserAbstractReposiotory extends AbstractRepository<Prisma.
   abstract getByEmail(email: string): Promise<UserEntity | null>;
   abstract getByUsername(username: string): Promise<UserEntity | null>;
   abstract updatePassword(userId: number, password: string): Promise<UserEntity>;
+  abstract findAll(): Promise<UserEntity[]>;
 };
