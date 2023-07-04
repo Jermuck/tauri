@@ -11,6 +11,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@hope-ui/core": "^1.0.0-next.11",
     "@hope-ui/solid": "^0.6.7",
     "@solidjs/router": "^0.8.2",
     "@stitches/core": "^1.2.8",

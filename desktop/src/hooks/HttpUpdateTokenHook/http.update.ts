@@ -15,7 +15,7 @@ export const useUpdateToken = (): funcUpdate => {
       const { data } = await instance.refresh();
       setUser(data.data.user);
       localStorage.setItem('access', data.data.access);
-      nav('/profile');
+      nav('/home');
     } catch (err) {
       setUser(null);
       localStorage.removeItem('access');

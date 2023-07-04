@@ -3,15 +3,13 @@ import { useNavigate } from "@solidjs/router";
 import { getAvatar } from "../../../store/ChangeAvatarStore/avatar.store";
 import { ModalChangeAvatar } from "../../components/ModalChangeAvatar/ModalChangeAvatar";
 import { SettingsPassword } from "../../components/SettingsPassword/SettingsPassword";
+import { Theme } from "../../UI/Theme/Theme";
 import Path from "../ProfilePage/icons/path.svg";
 
 export const PasswordPage = () => {
   const nav = useNavigate();
   return (
-    <Box
-      width={'100%'}
-      height={'100vh'}
-      display={'flex'}
+    <Theme
       background={'#343A4F'}
     >
       <Box
@@ -32,6 +30,6 @@ export const PasswordPage = () => {
       </Box>
       <SettingsPassword />
       {getAvatar().isOpen && <ModalChangeAvatar />}
-    </Box >
+    </Theme >
   )
 }

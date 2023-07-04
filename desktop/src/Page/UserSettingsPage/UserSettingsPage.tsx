@@ -4,16 +4,12 @@ import Path from "../ProfilePage/icons/path.svg";
 import { ModalChangeAvatar } from "../../components/ModalChangeAvatar/ModalChangeAvatar";
 import { getAvatar } from "../../../store/ChangeAvatarStore/avatar.store";
 import { UserSettings } from "../../components/UserSettings/UserSettings";
+import { Theme } from "../../UI/Theme/Theme";
 
 export const UserSettingsPage = () => {
   const nav = useNavigate();
   return (
-    <Box
-      width={'100%'}
-      height={'100vh'}
-      display={'flex'}
-      background={'#343A4F'}
-    >
+    <Theme background={'#343A4F'}>
       <Box
         width={74}
         height={'100vh'}
@@ -32,6 +28,6 @@ export const UserSettingsPage = () => {
       </Box>
       <UserSettings />
       {getAvatar().isOpen && <ModalChangeAvatar />}
-    </Box >
+    </Theme>
   )
 }

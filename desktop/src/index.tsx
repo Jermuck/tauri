@@ -11,6 +11,7 @@ import { ProfilePage } from "./Page/ProfilePage/ProfilePage";
 import { getUser } from "../store/UserStore/user.store";
 import { PasswordPage } from "./Page/PasswordPage/PasswordPage";
 import { UserSettingsPage } from "./Page/UserSettingsPage/UserSettingsPage";
+import { getLoading } from "../store/LoadingStore/loading.store";
 
 const GlobalRouter = () => {
   const updateToken = useUpdateToken();

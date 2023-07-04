@@ -1,5 +1,6 @@
 import { useNavigate } from "@solidjs/router";
 import { Accessor, createSignal } from "solid-js";
+import { setLoading } from "../../../../store/LoadingStore/loading.store";
 import { setProfile } from "../../../../store/ProfileStore/profile.store";
 import { AxiosError } from "../../../../types/index.types";
 import { ProfileController } from "../../../http/controllers/ProfileController/profile.controller";
@@ -32,11 +33,14 @@ export const useUpdateUserSettings = (): IUseUserSettings => {
         showError("Uncorrect form");
         return;
       };
+      setLoading(true)
       const apiInstance = ProfileController.getInstance();
       const { data } = await apiInstance.updateSettings(formData);
       setProfile(data.data);
-      nav('/profile')
+      nav('/profile');
+      setLoading(false)
     } catch (err) {
+      setLoading(false)
       const { response } = err as AxiosError;
       if (response.data.statusCode === 400) {
         showError(response.data.message);

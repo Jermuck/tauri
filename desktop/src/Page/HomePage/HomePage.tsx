@@ -1,8 +1,12 @@
-import { Box } from "@hope-ui/solid";
-import { getUser } from "../../../store/UserStore/user.store";
+import { Box, Button } from "@hope-ui/solid";
+import { useNavigate } from "@solidjs/router";
+import { Theme } from "../../UI/Theme/Theme";
 
 export const HomePage = () => {
+  const nav = useNavigate();
   return (
-    <Box color={"red"} width={'100%'} height={'100vh'}>{JSON.stringify(getUser())}</Box>
+    <Theme background={'#343A4F'}>
+      <Button onClick={() => nav('/profile')}>Profile</Button>
+    </Theme>
   )
 }

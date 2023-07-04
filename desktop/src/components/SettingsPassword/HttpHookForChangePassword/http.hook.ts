@@ -1,5 +1,6 @@
 import { useNavigate } from "@solidjs/router";
 import { Accessor, createSignal } from "solid-js";
+import { setLoading } from "../../../../store/LoadingStore/loading.store";
 import { AxiosError } from "../../../../types/index.types";
 import { ProfileController } from "../../../http/controllers/ProfileController/profile.controller";
 import { IPassword } from "../SettingsPassword";
@@ -29,11 +30,14 @@ export const useChangePassword = (): IChangePassword => {
         showError("Uncorrect form");
         return;
       };
+      setLoading(true)
       const instance = ProfileController.getInstance();
       //@ts-ignore
       await instance.change({ ...object });
       nav('/profile');
+      setLoading(false)
     } catch (err: any) {
+      setLoading(false)
       const { response } = err as AxiosError;
       if (response.data.statusCode === 400) {
         showError(response.data.message);

@@ -1,5 +1,5 @@
 import { Box, Image } from "@hope-ui/solid";
-import { Component, createEffect, createSignal } from "solid-js";
+import { Component, createSignal } from "solid-js";
 import Union from "./images/Union.svg";
 import { getAvatar, setAvatar } from "../../../store/ChangeAvatarStore/avatar.store";
 
