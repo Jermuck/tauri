@@ -10,9 +10,13 @@ export const ChatPanel = () => {
   const nav = useNavigate();
   const [getUsers, setUsers] = createSignal<IUser[]>([]);
 
-  async function usersHandler(): Promise<void> {
+  async function usersHandler(searchParam: string): Promise<void> {
+    if (searchParam.length === 0) {
+      setUsers([]);
+      return;
+    }
     const users = await getAsyncUsers();
-    setUsers(users);
+    setUsers(users.filter(el => el.username.includes(searchParam)));
   };
 
   return (
@@ -46,8 +50,9 @@ export const ChatPanel = () => {
         backgroundColor={'#343A4F'}
         borderColor={'#343A4F'}
         color={'white'}
-        onClick={usersHandler}
+        onInput={el => usersHandler(el.target.value)}
       />
+
       <Box width={'100%'} marginTop={20}>
         <For each={getUsers()}>{
           user =>
