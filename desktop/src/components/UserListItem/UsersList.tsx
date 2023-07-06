@@ -1,5 +1,6 @@
 import { Box, Text } from "@hope-ui/solid";
 import { Component } from "solid-js";
+import { setCompanion } from "../../../store/CompanionStore/companion.store";
 
 interface IUserListItem {
   id: number;
@@ -13,13 +14,15 @@ export const UserListItem: Component<IUserListItem> = ({
 }) => {
   return (
     <Box
-      width={'100%'}
+      width={310}
       height={71}
       display={'flex'}
       alignItems={'center'}
       borderColor={'#343A4F'}
       borderTopWidth={1}
       borderBottomWidth={1}
+      onClick={() => setCompanion({ id, username })}
+      cursor={'pointer'}
     >
       <Box width={47} height={47} background={'#343A4F'} borderRadius={47} marginLeft={11} />
       <Box
@@ -30,6 +33,6 @@ export const UserListItem: Component<IUserListItem> = ({
         <Text color={'#9898B0'} fontSize={14}>{msg}</Text>
       </Box>
       <Text color={'#717790'} fontSize={11} marginBottom={27}>{time}</Text>
-    </Box>
+    </Box >
   )
 }

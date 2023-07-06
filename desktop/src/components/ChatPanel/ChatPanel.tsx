@@ -1,4 +1,4 @@
-import { Box, Image, Input, Text } from "@hope-ui/solid";
+import { Box, Image, Input } from "@hope-ui/solid";
 import { useNavigate } from "@solidjs/router";
 import { createSignal, For } from "solid-js";
 import { IUser } from "../../../types/index.types";
@@ -27,6 +27,8 @@ export const ChatPanel = () => {
       display={'flex'}
       flexDirection={'column'}
       alignItems={'center'}
+      borderRightWidth={1}
+      borderRightColor={'#343A4F'}
     >
       <Box display={'flex'} justifyContent={'flex-end'} width={'100%'}>
         <Box
@@ -53,7 +55,7 @@ export const ChatPanel = () => {
         onInput={el => usersHandler(el.target.value)}
       />
 
-      <Box width={'100%'} marginTop={20}>
+      <Box width={310} marginTop={20}>
         <For each={getUsers()}>{
           user =>
             <UserListItem id={user.id} username={user.username} />}</For>

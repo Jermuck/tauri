@@ -56,4 +56,9 @@ export interface IProfileResponse {
 
 export interface IUsersResponse {
   data: IUser[];
+};
+
+export interface ICompanion {
+  id: number;
+  username: string;
 }
