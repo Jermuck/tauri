@@ -10,9 +10,12 @@ export const useUpdateToken = (): funcUpdate => {
 
   async function update(): Promise<void> {
     try {
-      setLoading(true)
+      setLoading(true);
       const token = localStorage.getItem('access');
-      if (!token) return;
+      if (!token) {
+        setLoading(false);
+        return;
+      };
       const instance = AuthController.getInstance();
       const { data } = await instance.refresh();
       setUser(data.data.user);

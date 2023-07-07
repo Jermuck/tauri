@@ -62,3 +62,9 @@ export interface ICompanion {
   id: number;
   username: string;
 }
+
+export interface IUserMessage {
+  id: number;
+  conversationId: number;
+  message: string;
+}

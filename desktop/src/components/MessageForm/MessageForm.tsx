@@ -3,8 +3,33 @@ import { getCompanion } from "../../../store/CompanionStore/companion.store";
 import { Circle } from "./images/Circle";
 import Attach from "./images/Attach.svg";
 import { Chat } from "../Chat/chat";
+import { createSignal, onMount } from "solid-js";
+import { IMyMessage } from "../../UI/MyMessage/MyMessage";
+import { io } from "socket.io-client";
+import { getUser } from "../../../store/UserStore/user.store";
+import { IUserMessage } from "../../../types/index.types";
 
 export const MessageForm = () => {
+  const socket = io('http://localhost:8080', {
+    extraHeaders: {
+      Authorization: `Bearer ${localStorage.getItem('access')}`
+    }
+  });
+  const [getMessages, setMessages] = createSignal<IMyMessage[]>([]);
+  const [getValue, setValue] = createSignal<string>('');
+
+  function createMessage(msg: string) {
+    socket.emit('msgToServer', {
+      id: getUser()?.id,
+      conversationId: getCompanion()?.id,
+      message: msg
+    } as IUserMessage)
+  };
+
+  socket.on('message', (msg: IUserMessage) => {
+    setMessages(prev => [...prev, msg])
+  });
+
   return (
     <Box
       width={"100%"}
@@ -17,7 +42,9 @@ export const MessageForm = () => {
           : <Box
             width={"100%"}
             height={'100vh'}
-            position={'relative'}
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'space-between'}
           >
             <Box
               height={77}
@@ -29,7 +56,7 @@ export const MessageForm = () => {
               <Text color={'#E2E2E4'} fontSize={18} marginLeft={20}>{getCompanion()?.username}</Text>
               <Circle onClick={() => { }} />
             </Box>
-            <Chat />
+            <Chat messages={getMessages} />
             <Box
               height={77}
               width={'100%'}
@@ -38,8 +65,16 @@ export const MessageForm = () => {
               alignItems={'center'}
             >
               <Image src={Attach} marginLeft={20} />
-              <Input width={600} border={'none'} boxShadow={'none'} placeholder={'message...'} color={'#FFF'} marginLeft={30} />
-              <Button backgroundColor={'#3369F9'} marginLeft={190}>Send</Button>
+              <Input
+                width={600}
+                border={'none'}
+                boxShadow={'none'}
+                placeholder={'message...'}
+                color={'#FFF'}
+                marginLeft={30}
+                onChange={element => setValue(element.target.value)}
+              />
+              <Button backgroundColor={'#3369F9'} marginLeft={190} onClick={() => createMessage(getValue())}>Send</Button>
             </Box>
 
           </Box>

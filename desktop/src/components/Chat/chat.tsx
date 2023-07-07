@@ -1,10 +1,18 @@
-import { Box, Text } from "@hope-ui/solid"
-import { MyMessage } from "../../UI/MyMessage/MyMessage"
+import { Box, Text } from "@hope-ui/solid";
+import { Component, For } from "solid-js";
+import { getUser } from "../../../store/UserStore/user.store";
+import { CompanionMessage } from "../../UI/CompanionMessage/CompanionMessage";
+import { IMyMessage, MyMessage } from "../../UI/MyMessage/MyMessage";
 
-export const Chat = () => {
+export const Chat: Component<{ messages: () => IMyMessage[] }> = ({ messages }) => {
   return (
-    <Box height={737} backgroundColor={'#343A4F'} style={{ "box-sizing": 'border-box' }}>
-      <MyMessage id={1} message={'Круто!'} isCheck={false} />
+    <Box height={'100vh'} backgroundColor={'#343A4F'} style={{ "box-sizing": 'border-box' }}>
+      <For each={messages()}>
+        {el =>
+          el.id === getUser()?.id ? <MyMessage {...el} />
+            : <CompanionMessage {...el} />
+        }
+      </For>
     </Box>
   )
 }

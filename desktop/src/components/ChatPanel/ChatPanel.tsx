@@ -1,6 +1,7 @@
 import { Box, Image, Input } from "@hope-ui/solid";
 import { useNavigate } from "@solidjs/router";
 import { createSignal, For } from "solid-js";
+import { getUser } from "../../../store/UserStore/user.store";
 import { IUser } from "../../../types/index.types";
 import { UserListItem } from "../UserListItem/UsersList";
 import { getAsyncUsers } from "./HttpHookForGetUsers/http.hook";
@@ -16,7 +17,7 @@ export const ChatPanel = () => {
       return;
     }
     const users = await getAsyncUsers();
-    setUsers(users.filter(el => el.username.includes(searchParam)));
+    setUsers(users.filter(el => el.username.includes(searchParam) && el.id !== getUser()?.id));
   };
 
   return (

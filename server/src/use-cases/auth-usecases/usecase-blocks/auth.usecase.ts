@@ -30,6 +30,7 @@ export class AuthUseCase {
 
   private createReponseUser(data: UserEntity): ResultAuthorization.RequiredUser {
     const user = new ResultAuthorization.RequiredUser();
+    user.id = data.id;
     user.updateDate = data.updateDate;
     user.createData = data.updateDate;
     user.email = data.email;

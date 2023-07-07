@@ -4,6 +4,9 @@ export namespace ResultAuthorization {
 
   export class RequiredUser {
     @ApiProperty()
+    public id: number;
+
+    @ApiProperty()
     public username: string;
 
     @ApiProperty()

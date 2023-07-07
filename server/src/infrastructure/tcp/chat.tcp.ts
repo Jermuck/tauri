@@ -2,14 +2,17 @@ import { UseGuards } from "@nestjs/common";
 import {
   OnGatewayConnection,
   WebSocketGateway,
-  WebSocketServer, SubscribeMessage, MessageBody
+  WebSocketServer,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { AuthGatewayGuard } from "../common/guards/auth.gateway.guard";
 import { BodyCanActivate } from "../controllers/auth/dto/user.register.dto";
 
 @WebSocketGateway(8080, {
-  cors: "*"
+  cors: 'http://localhost:1420'
 })
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
@@ -17,19 +20,18 @@ export class ChatGateway implements OnGatewayConnection {
 
   @SubscribeMessage('msgToServer')
   @UseGuards(AuthGatewayGuard)
-  public handleMessage(client: Socket, @MessageBody() payload: {
+  public handleMessage(@MessageBody() payload: {
     id: string,
-    convId: string,
-    msg: string
-  }): void {
-    this.server.sockets.sockets.forEach(element => {
-      if (element.id === payload.convId) {
-        element.send(payload.msg)
-      }
+    conversationId: string,
+    message: string
+  }, @ConnectedSocket() client: Socket) {
+    this.server.sockets.sockets.forEach(el => {
+      console.log(el.data)
     })
   };
 
   public handleConnection(client: Socket) {
-    console.log(client.id);
+    const header = client.request.headers.authorization;
+
   };
 }

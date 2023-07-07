@@ -36,3 +36,7 @@
 # Swagger - http://localhost:4444/api#
 
 # Prisma studio - npm run studio
+
+# Example wss
+  handleConnect => set data.id = user.id;
+  onMessage => foreach(el => el.data.id === payload.conversation.id - el.send(payload))
