@@ -5,10 +5,11 @@ export interface IMyMessage {
   id: number;
   message: string;
   isCheck?: boolean;
+  time: Date
 }
 
 export const MyMessage: Component<IMyMessage> = ({
-  id, message, isCheck
+  id, message, isCheck, time
 }) => {
   return (
     <Box
@@ -28,7 +29,9 @@ export const MyMessage: Component<IMyMessage> = ({
         marginRight={10}
       >
         <Text color={'#E2E2E4'} fontSize={16}>{message}</Text>
-        <Text color={'#717790'} fontSize={9} marginLeft={12}>12:00</Text>
+        <Text color={'#717790'} fontSize={9} marginLeft={12}>{
+          time.getHours().toString() + ':' + time.getMinutes().toString()
+        }</Text>
       </Box>
     </Box>
   )

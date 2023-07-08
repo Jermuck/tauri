@@ -1,4 +1,4 @@
-import { Box, Text } from "@hope-ui/solid";
+import { Box } from "@hope-ui/solid";
 import { Component, For } from "solid-js";
 import { getUser } from "../../../store/UserStore/user.store";
 import { CompanionMessage } from "../../UI/CompanionMessage/CompanionMessage";

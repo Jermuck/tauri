@@ -3,11 +3,10 @@ import { getCompanion } from "../../../store/CompanionStore/companion.store";
 import { Circle } from "./images/Circle";
 import Attach from "./images/Attach.svg";
 import { Chat } from "../Chat/chat";
-import { createSignal, onMount } from "solid-js";
+import { createSignal } from "solid-js";
 import { IMyMessage } from "../../UI/MyMessage/MyMessage";
 import { io } from "socket.io-client";
 import { getUser } from "../../../store/UserStore/user.store";
-import { IUserMessage } from "../../../types/index.types";
 
 export const MessageForm = () => {
   const socket = io('http://localhost:8080', {
@@ -19,15 +18,18 @@ export const MessageForm = () => {
   const [getValue, setValue] = createSignal<string>('');
 
   function createMessage(msg: string) {
-    socket.emit('msgToServer', {
+    const message = {
       id: getUser()?.id,
       conversationId: getCompanion()?.id,
-      message: msg
-    } as IUserMessage)
+      message: msg,
+      time: new Date()
+    } as IMyMessage;
+    socket.emit('msgToServer', message)
+    setMessages(prev => [...prev, { ...message }])
   };
 
-  socket.on('message', (msg: IUserMessage) => {
-    setMessages(prev => [...prev, msg])
+  socket.on('message', (msg: IMyMessage) => {
+    setMessages(prev => [...prev, { id: msg.id, message: msg.message, time: msg.time }]);
   });
 
   return (

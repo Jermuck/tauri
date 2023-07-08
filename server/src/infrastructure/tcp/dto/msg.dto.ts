@@ -1,4 +1,6 @@
 export class MessageDto {
-  public readonly userId: number;
-  public readonly msg: string;
+  public readonly conversationId: number;
+  public readonly message: string;
+  public readonly id: number;
+  public readonly time: Date;
 };
