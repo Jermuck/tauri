@@ -17,6 +17,8 @@ model UserEntity {
   description String?
   token       TokenEntity?
   profile  ProfileEntity?
+  userIdMessage MessageEntity[] @relation("UserMessage")
+  conversationIdMessage MessageEntity[] @relation("ConversationMessage")
 }
 
 model TokenEntity {
@@ -33,4 +35,15 @@ model ProfileEntity {
   phone String?
   user UserEntity @relation(fields:[userId], references: [id])
   userId Int @unique
+}
+
+model MessageEntity{
+  id Int @unique @default(autoincrement())
+  user UserEntity @relation("UserMessage", fields:[userId], references:[id])
+  userId Int
+  conversation UserEntity @relation("ConversationMessage",fields:[conversationId], references:[id])
+  conversationId Int
+  message String
+  time DateTime
+  @@id([userId, conversationId])
 }

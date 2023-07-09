@@ -1,5 +1,5 @@
 import { BadRequestException } from "@nestjs/common";
-import { ProfileEntity, UserEntity } from "@prisma/client";
+import { ProfileEntity } from "@prisma/client";
 import { BcryptAbstractAdapter } from "src/domain/adapters/bcrypt-adapter/bcrypt.adapter";
 import { ProfileModel } from "src/domain/models/ProfileModel/profile.model";
 import { ProfileAbstractRepository } from "src/domain/repositories/profile-repository/profile-repository.abstract";

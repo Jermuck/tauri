@@ -16,28 +16,39 @@ import { MessageDto } from "./dto/msg.dto";
   cors: '*'
 })
 export class ChatGateway implements OnGatewayConnection {
-
   constructor(
     @Inject('TCP')
     private readonly tcpUseCaseInstance: TcpUseCase
   ) { };
 
-  private setError(msg: string, socket: Socket) {
-    socket.send(msg);
-    socket.disconnect();
-  }
-
   @WebSocketServer()
   private server: Server;
 
+  private setError(msg: string, client: Socket) {
+    client.send(msg);
+    client.disconnect();
+  };
+
+  private findSocket(conversationId: number): Socket | null {
+    let client: Socket | null = null;
+    this.server.sockets.sockets.forEach(socket => {
+      if (socket.data.id === conversationId && socket.connected) {
+        client = socket;
+      }
+    });
+    return client;
+  }
+
   @SubscribeMessage('msgToServer')
   @UseGuards(AuthGatewayGuard)
-  public handleMessage(@MessageBody() payload: MessageDto, @ConnectedSocket() client: Socket) {
-    this.server.sockets.sockets.forEach(el => {
-      if (el.data.id === payload.conversationId && el.connected) {
-        el.send(payload)
-      }
-    })
+  public async handleMessage(@MessageBody() payload: MessageDto) {
+    const client = this.findSocket(payload.conversationId);
+    if (!client) {
+      const message = await this.tcpUseCaseInstance.saveMessage(payload);
+      client.send(message);
+      return;
+    }
+    await this.tcpUseCaseInstance.saveMessage(payload);
   };
 
   public handleConnection(client: Socket) {

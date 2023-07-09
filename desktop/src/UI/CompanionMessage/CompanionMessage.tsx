@@ -3,8 +3,12 @@ import { Component } from "solid-js"
 import { IMyMessage } from "../MyMessage/MyMessage"
 
 export const CompanionMessage: Component<IMyMessage> = ({
-  id, message, isCheck, time
+  message, time
 }) => {
+  function formatTime(time: string): string {
+    const arrayOfTime = time.split(' ');
+    return arrayOfTime[4].slice(0, -3)
+  };
   return (
     <Box
       display={'flex'}
@@ -21,11 +25,21 @@ export const CompanionMessage: Component<IMyMessage> = ({
         borderRightRadius={8}
         display={'flex'}
         marginLeft={10}
+        marginRight={60}
+        paddingRight={35}
+        position={'relative'}
       >
         <Text color={'#E2E2E4'} fontSize={16}>{message}</Text>
-        <Text color={'#717790'} fontSize={9} marginLeft={12}>{
-          time.getHours().toString() + ':' + time.getMinutes().toString()
-        }</Text>
+        <Text
+          color={'#717790'}
+          fontSize={9}
+          marginLeft={12}
+          position={'absolute'}
+          bottom={5}
+          right={5}
+        >{
+            formatTime(time)
+          }</Text>
       </Box>
     </Box>
 

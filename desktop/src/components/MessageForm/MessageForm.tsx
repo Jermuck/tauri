@@ -14,27 +14,29 @@ export const MessageForm = () => {
       Authorization: `Bearer ${localStorage.getItem('access')}`
     }
   });
+
   const [getMessages, setMessages] = createSignal<IMyMessage[]>([]);
   const [getValue, setValue] = createSignal<string>('');
 
   function createMessage(msg: string) {
+    if (!msg.length) return;
     const message = {
       id: getUser()?.id,
       conversationId: getCompanion()?.id,
       message: msg,
-      time: new Date()
+      time: new Date().toString()
     } as IMyMessage;
-    socket.emit('msgToServer', message)
-    setMessages(prev => [...prev, { ...message }])
+    socket.emit('msgToServer', message);
+    setMessages(prev => [...prev, message]);
   };
 
   socket.on('message', (msg: IMyMessage) => {
-    setMessages(prev => [...prev, { id: msg.id, message: msg.message, time: msg.time }]);
+    setMessages(prev => [...prev, msg]);
   });
 
   return (
     <Box
-      width={"100%"}
+      width={'100%'}
       height={'100vh'}
       position={'relative'}
     >
@@ -74,7 +76,8 @@ export const MessageForm = () => {
                 placeholder={'message...'}
                 color={'#FFF'}
                 marginLeft={30}
-                onChange={element => setValue(element.target.value)}
+                value={getValue()}
+                onInput={element => setValue(element.target.value)}
               />
               <Button backgroundColor={'#3369F9'} marginLeft={190} onClick={() => createMessage(getValue())}>Send</Button>
             </Box>
