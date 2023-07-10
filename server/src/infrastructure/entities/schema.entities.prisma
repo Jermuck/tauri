@@ -8,17 +8,17 @@ datasource db {
 }
 
 model UserEntity {
-  id          Int          @id @unique @default(autoincrement())
-  username    String       @unique()
+  id          Int            @id @unique @default(autoincrement())
+  username    String         @unique()
   password    String
-  email       String       @unique
-  updateDate  DateTime     @updatedAt
-  createDate  DateTime     @default(now())
+  email       String         @unique
+  updateDate  DateTime       @updatedAt
+  createDate  DateTime       @default(now())
   description String?
   token       TokenEntity?
-  profile  ProfileEntity?
-  userIdMessage MessageEntity[] @relation("UserMessage")
-  conversationIdMessage MessageEntity[] @relation("ConversationMessage")
+  profile     ProfileEntity?
+  userRoom  RoomEntity? @relation("UserRoomRelation")
+  conversationRoom  RoomEntity? @relation("ConversationRoomRelation")
 }
 
 model TokenEntity {
@@ -29,21 +29,27 @@ model TokenEntity {
 }
 
 model ProfileEntity {
-  id     Int         @unique @default(autoincrement())
-  name String?
+  id       Int        @unique @default(autoincrement())
+  name     String?
   lastname String?
-  phone String?
-  user UserEntity @relation(fields:[userId], references: [id])
-  userId Int @unique
+  phone    String?
+  user     UserEntity @relation(fields: [userId], references: [id])
+  userId   Int        @unique
+}
+
+model RoomEntity {
+  id             Int        @unique @default(autoincrement())
+  user           UserEntity @relation("UserRoomRelation", fields: [userId], references: [id])
+  userId         Int       @unique
+  conversation   UserEntity @relation("ConversationRoomRelation", fields: [conversationId], references: [id])
+  conversationId Int       @unique
+  messageObject MessageEntity[]
 }
 
 model MessageEntity{
   id Int @unique @default(autoincrement())
-  user UserEntity @relation("UserMessage", fields:[userId], references:[id])
-  userId Int
-  conversation UserEntity @relation("ConversationMessage",fields:[conversationId], references:[id])
-  conversationId Int
+  room RoomEntity @relation(fields: [roomId], references: [id])
+  roomId Int
   message String
   time DateTime
-  @@id([userId, conversationId])
 }

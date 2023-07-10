@@ -5,7 +5,6 @@ import {
   WebSocketServer,
   SubscribeMessage,
   MessageBody,
-  ConnectedSocket,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { TcpUseCase } from "src/use-cases/tcp-usecases/usecase-blocks/tcp.usecase";
@@ -43,12 +42,13 @@ export class ChatGateway implements OnGatewayConnection {
   @UseGuards(AuthGatewayGuard)
   public async handleMessage(@MessageBody() payload: MessageDto) {
     const client = this.findSocket(payload.conversationId);
-    if (!client) {
+    if (client) {
       const message = await this.tcpUseCaseInstance.saveMessage(payload);
+      console.log(message)
       client.send(message);
-      return;
+    }else{
+      await this.tcpUseCaseInstance.saveMessage(payload);
     }
-    await this.tcpUseCaseInstance.saveMessage(payload);
   };
 
   public handleConnection(client: Socket) {

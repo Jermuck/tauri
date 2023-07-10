@@ -11,19 +11,19 @@ export class ProfileReposiory implements ProfileAbstractRepository {
   ) { };
 
   public async create(profile: ProfileModel): Promise<ProfileEntity> {
-    return this.prisma.profileEntity.create({
+    return await this.prisma.profileEntity.create({
       data: profile
     })
   };
 
   public async getByUserId(userId: number): Promise<ProfileEntity> {
-    return this.prisma.profileEntity.findUnique({
+    return await this.prisma.profileEntity.findUnique({
       where: { userId }
     })
   };
 
   public async update(newProfile: ProfileModel): Promise<ProfileEntity> {
-    return this.prisma.profileEntity.update({
+    return await this.prisma.profileEntity.update({
       where: {
         userId: newProfile.userId
       },

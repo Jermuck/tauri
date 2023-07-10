@@ -4,7 +4,6 @@ import { TcpAbstractAdapter } from "src/domain/adapters/tcp-adapter/tcp.adapter"
 import { MessageModel } from "src/domain/models/MessageModel/message.model";
 import { MessageAbstractRepository } from "src/domain/repositories/message-repository/message-repository.abstract";
 import { UserAbstractReposiotory } from "src/domain/repositories/user-repository/user-repository.abstract";
-import { MessageRepository } from "src/infrastructure/repositories/message-repository/message.repository";
 
 export class TcpUseCase {
   constructor(
