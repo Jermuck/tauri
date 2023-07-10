@@ -44,7 +44,6 @@ export class ChatGateway implements OnGatewayConnection {
     const client = this.findSocket(payload.conversationId);
     if (client) {
       const message = await this.tcpUseCaseInstance.saveMessage(payload);
-      console.log(message)
       client.send(message);
     }else{
       await this.tcpUseCaseInstance.saveMessage(payload);
@@ -52,10 +51,15 @@ export class ChatGateway implements OnGatewayConnection {
   };
 
   public handleConnection(client: Socket) {
-    const header = client.request.headers.authorization;
-    if (!header) this.setError('Unaftorized', client);
-    const userId = this.tcpUseCaseInstance.getUserId(header);
-    if (!userId) this.setError('Unaftorized', client);
-    client.data['id'] = userId;
+    try{
+      const header = client.request.headers.authorization;
+      if(!header) throw new Error('Unaftorized');
+      const userId = this.tcpUseCaseInstance.getUserId(header);
+      if(!userId) throw new Error('Unaftorized');
+      client.data['id'] = userId;
+    }
+    catch(err){
+      this.setError(err, client);
+    }
   };
 }

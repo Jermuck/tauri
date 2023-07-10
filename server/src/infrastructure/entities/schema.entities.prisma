@@ -17,8 +17,8 @@ model UserEntity {
   description String?
   token       TokenEntity?
   profile     ProfileEntity?
-  userRoom  RoomEntity? @relation("UserRoomRelation")
-  conversationRoom  RoomEntity? @relation("ConversationRoomRelation")
+  userRoom  RoomEntity[] @relation("UserRoomRelation")
+  conversationRoom  RoomEntity[] @relation("ConversationRoomRelation")
 }
 
 model TokenEntity {
@@ -40,9 +40,9 @@ model ProfileEntity {
 model RoomEntity {
   id             Int        @unique @default(autoincrement())
   user           UserEntity @relation("UserRoomRelation", fields: [userId], references: [id])
-  userId         Int       @unique
+  userId         Int       
   conversation   UserEntity @relation("ConversationRoomRelation", fields: [conversationId], references: [id])
-  conversationId Int       @unique
+  conversationId Int       
   messageObject MessageEntity[]
 }
 

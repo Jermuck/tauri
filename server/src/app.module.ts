@@ -4,6 +4,7 @@ import { AuthModule } from './infrastructure/controllers/auth/auth.module';
 import { ProfileModule } from './infrastructure/controllers/profile/profile.module';
 import { UsersModule } from './infrastructure/controllers/users/users.module';
 import { ChatModule } from './infrastructure/tcp/chat.module';
+import { MessageModule } from './infrastructure/controllers/message/message.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { ChatModule } from './infrastructure/tcp/chat.module';
     AuthModule,
     ProfileModule,
     ChatModule,
-    UsersModule
+    UsersModule,
+    MessageModule
   ],
 })
 export class AppModule { };

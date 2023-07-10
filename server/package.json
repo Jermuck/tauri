@@ -22,6 +22,7 @@
     "prisma:generate": "npx prisma migrate dev --schema=./src/infrastructure/entities/schema.entities.prisma",
     "prisma:studio": "npx prisma studio --schema=./src/infrastructure/entities/schema.entities.prisma",
     "prisma:push": "npx prisma migrate deploy --schema=./src/infrastructure/entities/schema.entities.prisma",
+    "prisma:reset": "npx prisma migrate reset --schema=./src/infrastructure/entities/schema.entities.prisma",
     "deploy": "npm run prisma:push && npm run start:prod"
   },
   "dependencies": {

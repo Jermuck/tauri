@@ -19,13 +19,13 @@ export class AuthGatewayGuard implements CanActivate {
     const header = ws.handshake.headers.authorization;
     if (!header) {
       this.errorWithDisconect("Unaftorized", 401, ws);
-      return;
+      return false;
     };
     const [bearer, access] = header.split(" ");
     const user = this.JwtService.validateToken(access);
     if (!user || bearer !== "Bearer") {
       this.errorWithDisconect("Unaftorized", 401, ws);
-      return;
+      return false;
     };
     ws.data = {
       ...ws.data,

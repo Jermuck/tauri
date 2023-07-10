@@ -45,5 +45,17 @@ export class MessageRepository implements MessageAbstractRepository {
   };
 
   public async delete(id: number): Promise<void> {
+    await this.prisma.messageEntity.delete({
+      where: { id }
+    })
   };
+
+  public async getAll(userId: number, conversationId: number): Promise<MessageEntity[]> {
+    const room = await this.findRoom(userId, conversationId);
+    if(!room) return [];
+    const messages = await this.prisma.messageEntity.findMany({
+      where:{ roomId: room.id }
+    });
+    return messages;
+  }
 }

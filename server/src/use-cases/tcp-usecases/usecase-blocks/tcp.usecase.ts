@@ -27,4 +27,14 @@ export class TcpUseCase {
     const newMessage = await this.messageRepo.create(messageModel);
     return newMessage;
   }
+
+
+  public async getMessages(userId:number, conversationId: number){
+    const messageByUser = await this.messageRepo.getAll(userId, conversationId);
+    const messageByConversation = await this.messageRepo.getAll(conversationId, userId);
+    const combineArrayOfMessages = messageByUser.concat(messageByConversation);
+    combineArrayOfMessages.sort(el => el.id);
+    return combineArrayOfMessages;
+  };
+  
 }
