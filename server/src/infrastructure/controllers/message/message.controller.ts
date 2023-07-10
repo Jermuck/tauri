@@ -10,13 +10,13 @@ export class MessageController{
         private readonly tcp: TcpUseCase
     ){};
 
-    @Get()
+    @Get(":conversationId")
     @HttpCode(200)
     @UseGuards(AuthGuard)
     public async getAll(
-        @Param('conversationId') conversationId: number, 
+        @Param() param: {conversationId: number}, 
         @Body() dto: BodyCanActivate
     ){
-        return await this.tcp.getMessages(dto._id, conversationId);
+        return await this.tcp.getMessages(dto._id, +param.conversationId);
     };
 };

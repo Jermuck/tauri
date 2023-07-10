@@ -12,6 +12,12 @@ export class TcpUseCase {
     private readonly messageRepo: MessageAbstractRepository
   ) { };
 
+  private compare(firstMessage: MessageEntity, secondMessage: MessageEntity): number{
+    if(firstMessage.id > secondMessage.id) return 1;
+    if(firstMessage.id < secondMessage.id) return -1;
+    return 0;
+  }
+
   public getUserId(header: string): number | null {
     const arrayOfHeader = header.split(' ');
     if (arrayOfHeader.length !== 2) return null;
@@ -29,11 +35,11 @@ export class TcpUseCase {
   }
 
 
-  public async getMessages(userId:number, conversationId: number){
+  public async getMessages(userId:number, conversationId: number): Promise<MessageEntity[]>{
     const messageByUser = await this.messageRepo.getAll(userId, conversationId);
     const messageByConversation = await this.messageRepo.getAll(conversationId, userId);
     const combineArrayOfMessages = messageByUser.concat(messageByConversation);
-    combineArrayOfMessages.sort(el => el.id);
+    combineArrayOfMessages.sort(this.compare);
     return combineArrayOfMessages;
   };
   
