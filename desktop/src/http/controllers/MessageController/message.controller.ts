@@ -9,6 +9,6 @@ export class MessageController{
     };
 
     public async getMessages(conversationId:number): Promise<AxiosResponse<IResponseGetMessages<IMyMessage[]>>>{
-        return await $api.get<IResponseGetMessages<IMyMessage[]>>(`/messages/${conversationId}`);
+        return await $api.get<IResponseGetMessages<IMyMessage[]>>(`/messages/all/${conversationId}`);
     }
 }

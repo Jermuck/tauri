@@ -3,28 +3,40 @@ import { TcpUseCase } from "src/use-cases/tcp-usecases/usecase-blocks/tcp.usecas
 import { BodyCanActivate } from "../auth/dto/user.register.dto";
 import { AuthGuard } from "src/infrastructure/common/guards/auth.guard";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { IMessageResponse } from "src/use-cases/tcp-usecases/response-data/response.interface";
+import { IMessageResponse, UserOpenRoomResponse } from "src/use-cases/tcp-usecases/response-data/response.interface";
+import { MessageParam } from "./dto/message.dto";
 
 @Controller('/messages')
 @ApiTags('Message')
 export class MessageController{
     constructor(
         @Inject('TCP')
-        private readonly tcp: TcpUseCase
+        private readonly tcpInstance: TcpUseCase
     ){};
 
-    @Get(":conversationId")
+    @Get('/all/:conversationId')
     @HttpCode(200)
     @UseGuards(AuthGuard)
     @ApiResponse({
         status: 200,
         type: [IMessageResponse]
     })
-    @ApiOperation({ description: "Get messages by user"})
-    public async getAll(
-        @Param() param: {conversationId: number}, 
+    @ApiOperation({ description: 'Get messages by user'})
+    public async getMessages(
+        @Param() param: MessageParam, 
         @Body() dto: BodyCanActivate
     ){
-        return await this.tcp.getMessages(dto._id, +param.conversationId);
+        return await this.tcpInstance.getMessages(dto._id, +param.conversationId);
+    };
+    @Get('/rooms')
+    @HttpCode(200)
+    @UseGuards(AuthGuard)
+    @ApiResponse({
+        status: 200,
+        type: [UserOpenRoomResponse]
+    })
+    @ApiOperation({description: 'Get open messages transaction'})
+    public async getRooms(@Body() dto: BodyCanActivate){
+        return this.tcpInstance.getRoomsWithLastMessage(dto._id);
     };
 };

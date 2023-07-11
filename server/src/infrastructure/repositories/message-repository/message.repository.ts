@@ -1,10 +1,11 @@
-import { MessageEntity, RoomEntity } from "@prisma/client";
+import { MessageEntity, RoomEntity} from "@prisma/client";
 import { MessageModel } from "src/domain/models/MessageModel/message.model";
 import { MessageAbstractRepository } from "src/domain/repositories/message-repository/message-repository.abstract";
 import { PrismaService } from "src/infrastructure/config/prisma.config";
 import { Injectable } from "@nestjs/common";
+import { RoomWithUserAndMessages } from "src/domain/repositories/message-repository/message-repository.abstract";
 
-type MessageOfUserId = MessageEntity & { userId: number }
+type MessageOfUserId = MessageEntity & { userId: number };
 
 @Injectable()
 export class MessageRepository implements MessageAbstractRepository {
@@ -12,7 +13,7 @@ export class MessageRepository implements MessageAbstractRepository {
     private readonly prisma: PrismaService
   ) { };
 
-  private converToNormaData(array: (MessageEntity & { room: RoomEntity })[]): MessageOfUserId[] {
+  private convertToNormalMessageData(array: (MessageEntity & { room: RoomEntity })[]): MessageOfUserId[] {
     return array.map<MessageOfUserId>(msg => ({
       userId: msg.room.userId,
       id: msg.id,
@@ -22,14 +23,6 @@ export class MessageRepository implements MessageAbstractRepository {
     }));
   };
 
-  public async findRoom(userId: number, conversationId: number): Promise<RoomEntity> {
-    const room = this.prisma.roomEntity.findFirst({
-      where: {
-        userId, conversationId
-      }
-    });
-    return room;
-  };
 
   private async createRoom(userId: number, conversationId: number): Promise<RoomEntity> {
     return await this.prisma.roomEntity.create({
@@ -45,6 +38,14 @@ export class MessageRepository implements MessageAbstractRepository {
         time: new Date()
       }
     })
+  };
+  public async findRoom(userId: number, conversationId: number): Promise<RoomEntity> {
+    const room = this.prisma.roomEntity.findFirst({
+      where: {
+        userId, conversationId
+      }
+    });
+    return room;
   };
 
   public async create(messageModel: MessageModel): Promise<MessageEntity> {
@@ -68,7 +69,13 @@ export class MessageRepository implements MessageAbstractRepository {
     const messagesOfTable = await this.prisma.messageEntity.findMany({
       where: { roomId: room.id }, include: { room: true }
     });
-    const messages = this.converToNormaData(messagesOfTable);
+    const messages = this.convertToNormalMessageData(messagesOfTable);
     return messages;
-  }
+  };
+
+  public async findRoomByUserId(userId: number): Promise<RoomWithUserAndMessages[]> {
+    return await this.prisma.roomEntity.findMany({
+      where: { userId }, include: { messageObject: true, conversation: true }
+    });
+  };
 }

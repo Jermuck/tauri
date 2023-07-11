@@ -1,18 +1,29 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { MessageEntity, UserEntity } from "@prisma/client";
+import { ResultAuthorization } from "src/use-cases/auth-usecases/response-data/response.interfaces";
 
-export class IMessageResponse{
+export class IMessageResponse {
     @ApiProperty()
-    id:number;
-
-    @ApiProperty()
-    userId:number;
-
-    @ApiProperty()
-    time: Date;
+    public id: number;
 
     @ApiProperty()
-    message:string;
+    public userId: number;
 
     @ApiProperty()
-    roomId: number;
+    public time: Date;
+
+    @ApiProperty()
+    public message: string;
+
+    @ApiProperty()
+    public roomId: number;
+};
+
+
+export class UserOpenRoomResponse {
+    @ApiProperty()
+    public user: UserEntity;
+
+    @ApiProperty()
+    public lastMessage: MessageEntity;
 }

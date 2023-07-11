@@ -4,4 +4,4 @@ export class WsResponse<T>{
         public data?: T,
         public message?: string
     ) { }
-}
+};

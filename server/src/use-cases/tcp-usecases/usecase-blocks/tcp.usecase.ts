@@ -3,8 +3,10 @@ import { WsException } from "@nestjs/websockets";
 import { MessageEntity } from "@prisma/client";
 import { TcpAbstractAdapter } from "src/domain/adapters/tcp-adapter/tcp.adapter";
 import { MessageModel } from "src/domain/models/MessageModel/message.model";
-import { MessageAbstractRepository } from "src/domain/repositories/message-repository/message-repository.abstract";
+import { MessageAbstractRepository, RoomWithUserAndMessages } from "src/domain/repositories/message-repository/message-repository.abstract";
 import { UserAbstractReposiotory } from "src/domain/repositories/user-repository/user-repository.abstract";
+import { UserOpenRoomResponse } from "../response-data/response.interface";
+import { ResultAuthorization } from "src/use-cases/auth-usecases/response-data/response.interfaces";
 
 export class TcpUseCase {
   constructor(
@@ -17,6 +19,13 @@ export class TcpUseCase {
     if (firstMessage.id > secondMessage.id) return 1;
     if (firstMessage.id < secondMessage.id) return -1;
     return 0;
+  };
+
+  private convertToUserOpenMessageChatList(array: RoomWithUserAndMessages[]){
+    return array.map<UserOpenRoomResponse>(el => ({
+      user: el.conversation,
+      lastMessage: el.messageObject[0]
+    }))
   }
 
   public getUserId(header: string): number | null {
@@ -46,4 +55,10 @@ export class TcpUseCase {
     return combineArrayOfMessages;
   };
 
+
+  public async getRoomsWithLastMessage(userId: number): Promise<UserOpenRoomResponse[]> {
+    const rooms = await this.messageRepo.findRoomByUserId(userId);
+    const result = this.convertToUserOpenMessageChatList(rooms);
+    return result;
+  }
 }

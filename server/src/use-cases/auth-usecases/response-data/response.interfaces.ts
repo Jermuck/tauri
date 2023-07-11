@@ -13,13 +13,14 @@ export namespace ResultAuthorization {
     public email: string;
 
     @ApiProperty()
-    public description: string;
+    public description?: string;
 
     @ApiProperty()
     public updateDate: Date;
 
     @ApiProperty()
     public createData: Date;
+
   }
 
   export class ResponseForAuthRequest {
