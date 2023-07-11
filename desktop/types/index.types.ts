@@ -63,8 +63,13 @@ export interface ICompanion {
   username: string;
 }
 
-export interface IUserMessage {
-  id: number;
+export interface CreateDtoMessage {
   conversationId: number;
+  message: string;
+  time: Date;
+}
+export interface ISocketMessageResponse<T>{
+  error: 'error' | 'message';
+  data: T;
   message: string;
 }

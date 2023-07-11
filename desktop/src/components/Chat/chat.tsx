@@ -9,7 +9,7 @@ export const Chat: Component<{ messages: () => IMyMessage[] }> = ({ messages }) 
     <Box height={'100vh'} backgroundColor={'#343A4F'} style={{ "box-sizing": 'border-box' }}>
       <For each={messages()}>
         {el =>
-          el.id === getUser()?.id ? <MyMessage {...el} />
+          el.userId === getUser()?.id ? <MyMessage {...el} />
             : <CompanionMessage {...el} />
         }
       </For>

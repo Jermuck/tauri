@@ -5,10 +5,6 @@ import { IMyMessage } from "../MyMessage/MyMessage"
 export const CompanionMessage: Component<IMyMessage> = ({
   message, time
 }) => {
-  function formatTime(time: string): string {
-    const arrayOfTime = time.split(' ');
-    return arrayOfTime[4].slice(0, -3)
-  };
   return (
     <Box
       display={'flex'}
@@ -38,7 +34,7 @@ export const CompanionMessage: Component<IMyMessage> = ({
           bottom={5}
           right={5}
         >{
-            formatTime(time)
+          time.getHours() + ':' + time.getMinutes()
           }</Text>
       </Box>
     </Box>

@@ -4,18 +4,14 @@ import { Component } from "solid-js";
 export interface IMyMessage {
   id: number;
   message: string;
-  isCheck?: boolean;
-  time: string;
-  conversationId: number;
+  userId: number;
+  time: Date;
+  roomId: number;
 }
 
 export const MyMessage: Component<IMyMessage> = ({
   message, time
 }) => {
-  function formatTime(time: string): string {
-    const arrayOfTime = time.split(' ');
-    return arrayOfTime[4].slice(0, -3);
-  };
 
   return (
     <Box
@@ -46,7 +42,7 @@ export const MyMessage: Component<IMyMessage> = ({
           bottom={5}
           right={5}
         >
-          {formatTime(time)}</Text>
+          {time.getHours() + ':' + time.getMinutes()}</Text>
       </Box>
     </Box>
   )

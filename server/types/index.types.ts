@@ -1,4 +1,4 @@
-export class WsResponse<T extends object = any>{
+export class WsResponse<T>{
     constructor(
         public type: 'error' | 'message',
         public data?: T,

@@ -13,7 +13,6 @@ import { AuthGatewayGuard } from "../common/guards/auth.gateway.guard";
 import { MessageDto } from "./dto/msg.dto";
 import { MessageModel } from "src/domain/models/MessageModel/message.model";
 import { WebsocketExceptionFilter } from "../common/filters/WsExceptionFilter";
-import { MessageEntity } from "@prisma/client";
 import { WsResponse } from "types/index.types";
 
 @WebSocketGateway(8080, {
@@ -29,7 +28,7 @@ export class ChatGateway implements OnGatewayConnection {
   private server: Server;
 
   private setError(msg: string, client: Socket): void {
-    client.send(msg);
+    client.send(new WsResponse('error', {}, msg));
     client.disconnect();
   };
 
@@ -53,17 +52,14 @@ export class ChatGateway implements OnGatewayConnection {
     const message = await this.tcpUseCaseInstance.saveMessage(payload);
     const wsResponse = new WsResponse('message', message, "success");
     if (client) client.send(wsResponse);
+    socket.send(wsResponse)
   };
 
   public handleConnection(client: Socket) {
-    try {
-      const header = client.request.headers.authorization;
-      if (!header) throw new Error('Unaftorized');
-      const userId = this.tcpUseCaseInstance.getUserId(header);
-      if (!userId) throw new Error('Unaftorized');
-      client.data['id'] = userId;
-    } catch (err) {
-      this.setError(err, client);
-    }
+    const header = client.request.headers.authorization;
+    if (!header) this.setError("Unaftorized", client);
+    const userId = this.tcpUseCaseInstance.getUserId(header);
+    if (!userId) this.setError('Unaftorized', client);
+    client.data['id'] = userId;
   };
 }

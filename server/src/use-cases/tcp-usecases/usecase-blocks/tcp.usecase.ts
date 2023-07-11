@@ -13,9 +13,9 @@ export class TcpUseCase {
     private readonly messageRepo: MessageAbstractRepository
   ) { };
 
-  private compare(firstMessage: MessageEntity, secondMessage: MessageEntity): number{
-    if(firstMessage.id > secondMessage.id) return 1;
-    if(firstMessage.id < secondMessage.id) return -1;
+  private compare(firstMessage: MessageEntity, secondMessage: MessageEntity): number {
+    if (firstMessage.id > secondMessage.id) return 1;
+    if (firstMessage.id < secondMessage.id) return -1;
     return 0;
   }
 
@@ -28,22 +28,22 @@ export class TcpUseCase {
     return userId;
   }
 
-  public async saveMessage(messageModel: MessageModel): Promise<MessageEntity> {
+  public async saveMessage(messageModel: MessageModel): Promise<MessageEntity & { userId: number }> {
     const isExistConversation = await this.userRepo.getById(messageModel.conversationId);
     const isExistUser = await this.userRepo.getById(messageModel.userId);
     if (!isExistUser || !isExistConversation) throw new WsException('Not found conversation');
     const newMessage = await this.messageRepo.create(messageModel);
-    return newMessage;
+    return { userId: messageModel.userId, ...newMessage };
   }
 
-  public async getMessages(userId:number, conversationId: number): Promise<MessageEntity[]>{
+  public async getMessages(userId: number, conversationId: number): Promise<MessageEntity[]> {
     const isExistDialog = await this.messageRepo.findRoom(userId, conversationId);
-    if(!isExistDialog) throw new BadRequestException('Not found room');
+    if (!isExistDialog) throw new BadRequestException('Not found room');
     const messageByUser = await this.messageRepo.getAll(userId, conversationId);
     const messageByConversation = await this.messageRepo.getAll(conversationId, userId);
     const combineArrayOfMessages = messageByUser.concat(messageByConversation);
     combineArrayOfMessages.sort(this.compare);
     return combineArrayOfMessages;
   };
-  
+
 }

@@ -5,5 +5,4 @@ export class MessageDto {
   public readonly conversationId: number;
   @IsString()
   public readonly message: string;
-  public readonly time: Date;
 };

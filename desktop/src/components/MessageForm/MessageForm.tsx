@@ -6,6 +6,7 @@ import { Chat } from "../Chat/chat";
 import { createSignal } from "solid-js";
 import { IMyMessage } from "../../UI/MyMessage/MyMessage";
 import { io } from "socket.io-client";
+import { CreateDtoMessage, ISocketMessageResponse } from "../../../types/index.types";
 import { getUser } from "../../../store/UserStore/user.store";
 
 export const MessageForm = () => {
@@ -19,19 +20,19 @@ export const MessageForm = () => {
   const [getValue, setValue] = createSignal<string>('');
 
   function createMessage(msg: string) {
-    if (!msg.length) return;
-    const message = {
-      id: getUser()?.id,
+    const newMessage: CreateDtoMessage = {
+      //@ts-ignore
       conversationId: getCompanion()?.id,
       message: msg,
-      time: new Date().toString()
-    } as IMyMessage;
-    socket.emit('msgToServer', message);
-    setMessages(prev => [...prev, message]);
+    };
+    socket.emit('msgToServer', newMessage);
   };
 
-  socket.on('message', (msg: IMyMessage) => {
-    setMessages(prev => [...prev, msg]);
+  socket.on('message', (msg: ISocketMessageResponse<IMyMessage>) => {
+    const { data } = msg;
+    setMessages(prev => [...prev, {
+      ...data, time: new Date(data.time)
+    }]);
   });
 
   return (
