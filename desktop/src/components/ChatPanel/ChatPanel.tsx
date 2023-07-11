@@ -1,19 +1,35 @@
 import { Box, Image, Input } from "@hope-ui/solid";
 import { useNavigate } from "@solidjs/router";
-import { createSignal, For } from "solid-js";
-import { getUser } from "../../../store/UserStore/user.store";
-import { IUser } from "../../../types/index.types";
-import { UserListItem } from "../UserListItem/UsersList";
+import { createEffect, createSignal, For } from "solid-js";
+import { getUser, setUser } from "../../../store/UserStore/user.store";
+import { IResponseRoom, IUser } from "../../../types/index.types";
+import { IUserListItem, UserListItem } from "../UserListItem/UsersList";
 import { getAsyncUsers } from "./HttpHookForGetUsers/http.hook";
 import Polygon from "./images/Polygon.svg";
+import { getAsyncOpenRooms } from "./HttpHookForGetOpenRooms/http.hook";
 
 export const ChatPanel = () => {
   const nav = useNavigate();
-  const [getUsers, setUsers] = createSignal<IUser[]>([]);
+  const [getUsers, setUsers] = createSignal<IUserListItem[]>([]);
+
+  function convertToIUserListItem(array: IResponseRoom[]): IUserListItem[] {
+    return array.map<IUserListItem>(el => ({
+      id: el.user.id,
+      username: el.user.username,
+      msg: el.lastMessage.message,
+      time: new Date(el.lastMessage.time)
+    }));
+  }
+
+  createEffect(async () => {
+    const openRooms = await getAsyncOpenRooms();
+    setUsers(convertToIUserListItem(openRooms));
+  })
 
   async function usersHandler(searchParam: string): Promise<void> {
     if (searchParam.length === 0) {
-      setUsers([]);
+      const openRooms = await getAsyncOpenRooms();
+      setUsers(convertToIUserListItem(openRooms));
       return;
     }
     const users = await getAsyncUsers();
@@ -59,7 +75,7 @@ export const ChatPanel = () => {
       <Box width={310} marginTop={20}>
         <For each={getUsers()}>{
           user =>
-            <UserListItem id={user.id} username={user.username} />}</For>
+            <UserListItem {...user} />}</For>
       </Box>
     </Box>
   )

@@ -2,16 +2,20 @@ import { Box, Text } from "@hope-ui/solid";
 import { Component } from "solid-js";
 import { setCompanion } from "../../../store/CompanionStore/companion.store";
 
-interface IUserListItem {
+export interface IUserListItem {
   id: number;
   username: string;
   msg?: string;
-  time?: string;
+  time?: Date;
 }
 
 export const UserListItem: Component<IUserListItem> = ({
   id, username, msg, time
 }) => {
+  const getMinutes = (min: number | undefined) => { 
+    if(!min) return;
+    return min.toString().length === 1 ? `0${min}` : min.toString() 
+  }
   return (
     <Box
       width={310}
@@ -32,7 +36,9 @@ export const UserListItem: Component<IUserListItem> = ({
         <Text color={'#E2E2E4'} fontSize={15}>{username}</Text>
         <Text color={'#9898B0'} fontSize={14}>{msg}</Text>
       </Box>
-      <Text color={'#717790'} fontSize={11} marginBottom={27}>{time}</Text>
+      <Text color={'#717790'} fontSize={11} marginBottom={27}>{
+        time && time?.getHours() + ':' + getMinutes(time?.getMinutes())
+      }</Text>
     </Box >
   )
 }

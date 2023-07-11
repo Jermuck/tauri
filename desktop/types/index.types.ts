@@ -1,4 +1,5 @@
 import { ISign } from "../src/Page/AuthPage/AuthPage";
+import { IMyMessage } from "../src/UI/MyMessage/MyMessage";
 
 export interface IUserModel {
   username: string;
@@ -77,4 +78,9 @@ export interface ISocketMessageResponse<T>{
 
 export interface IResponseGetMessages<T>{
   data: T;
+};
+
+export interface IResponseRoom{
+  user: IUser;
+  lastMessage: Omit<IMyMessage, 'userId'>;
 }
