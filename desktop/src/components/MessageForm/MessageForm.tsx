@@ -3,11 +3,11 @@ import { getCompanion } from "../../../store/CompanionStore/companion.store";
 import { Circle } from "./images/Circle";
 import Attach from "./images/Attach.svg";
 import { Chat } from "../Chat/chat";
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import { IMyMessage } from "../../UI/MyMessage/MyMessage";
 import { io } from "socket.io-client";
 import { CreateDtoMessage, ISocketMessageResponse } from "../../../types/index.types";
-import { getUser } from "../../../store/UserStore/user.store";
+import { getAsyncMessages } from "./HttpHookForGetMessages/hook.http";
 
 export const MessageForm = () => {
   const socket = io('http://localhost:8080', {
@@ -20,21 +20,27 @@ export const MessageForm = () => {
   const [getValue, setValue] = createSignal<string>('');
 
   function createMessage(msg: string) {
+    if(msg.length === 0) return;
     const newMessage: CreateDtoMessage = {
       //@ts-ignore
       conversationId: getCompanion()?.id,
       message: msg,
     };
     socket.emit('msgToServer', newMessage);
+    setValue('')
   };
 
   socket.on('message', (msg: ISocketMessageResponse<IMyMessage>) => {
     const { data } = msg;
-    setMessages(prev => [...prev, {
-      ...data, time: new Date(data.time)
-    }]);
+    setMessages(prev => [...prev, { ...data, time: new Date(data.time) }]);
   });
 
+  createEffect(async () => {
+    if(!getCompanion()?.id) return;
+    //@ts-ignore
+    const messages = await getAsyncMessages(getCompanion()?.id);
+    setMessages(messages);
+  })
   return (
     <Box
       width={'100%'}

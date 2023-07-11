@@ -5,6 +5,7 @@ import { IMyMessage } from "../MyMessage/MyMessage"
 export const CompanionMessage: Component<IMyMessage> = ({
   message, time
 }) => {
+  const getMinutes = (min:number) => min.toString().length === 1 ? `0${min}` : min.toString()
   return (
     <Box
       display={'flex'}
@@ -34,7 +35,7 @@ export const CompanionMessage: Component<IMyMessage> = ({
           bottom={5}
           right={5}
         >{
-          time.getHours() + ':' + time.getMinutes()
+          time.getHours() + ':' + getMinutes(time.getMinutes())
           }</Text>
       </Box>
     </Box>

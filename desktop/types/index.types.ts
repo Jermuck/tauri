@@ -68,8 +68,13 @@ export interface CreateDtoMessage {
   message: string;
   time: Date;
 }
+
 export interface ISocketMessageResponse<T>{
   error: 'error' | 'message';
   data: T;
   message: string;
+};
+
+export interface IResponseGetMessages<T>{
+  data: T;
 }

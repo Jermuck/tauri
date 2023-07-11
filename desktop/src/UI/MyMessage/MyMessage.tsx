@@ -12,7 +12,7 @@ export interface IMyMessage {
 export const MyMessage: Component<IMyMessage> = ({
   message, time
 }) => {
-
+  const getMinutes = (min:number) => min.toString().length === 1 ? `0${min}` : min.toString()
   return (
     <Box
       display={'flex'}
@@ -42,7 +42,8 @@ export const MyMessage: Component<IMyMessage> = ({
           bottom={5}
           right={5}
         >
-          {time.getHours() + ':' + time.getMinutes()}</Text>
+          {time.getHours() + ':' + getMinutes(time.getMinutes())}
+        </Text>
       </Box>
     </Box>
   )
