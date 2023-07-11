@@ -10,7 +10,7 @@ export class MessageRepository implements MessageAbstractRepository {
     private readonly prisma: PrismaService
   ) { };
 
-  private async findRoom(userId: number, conversationId: number): Promise<RoomEntity>{
+  public async findRoom(userId: number, conversationId: number): Promise<RoomEntity>{
     const room = this.prisma.roomEntity.findFirst({
       where:{
         userId, conversationId

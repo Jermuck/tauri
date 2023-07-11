@@ -1,3 +1,4 @@
+import { BadRequestException } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
 import { MessageEntity } from "@prisma/client";
 import { TcpAbstractAdapter } from "src/domain/adapters/tcp-adapter/tcp.adapter";
@@ -28,14 +29,16 @@ export class TcpUseCase {
   }
 
   public async saveMessage(messageModel: MessageModel): Promise<MessageEntity> {
-    const isExistUser = await this.userRepo.getById(messageModel.conversationId);
-    if (!isExistUser) throw new WsException('Not found conversation');
+    const isExistConversation = await this.userRepo.getById(messageModel.conversationId);
+    const isExistUser = await this.userRepo.getById(messageModel.userId);
+    if (!isExistUser || !isExistConversation) throw new WsException('Not found conversation');
     const newMessage = await this.messageRepo.create(messageModel);
     return newMessage;
   }
 
-
   public async getMessages(userId:number, conversationId: number): Promise<MessageEntity[]>{
+    const isExistDialog = await this.messageRepo.findRoom(userId, conversationId);
+    if(!isExistDialog) throw new BadRequestException('Not found room');
     const messageByUser = await this.messageRepo.getAll(userId, conversationId);
     const messageByConversation = await this.messageRepo.getAll(conversationId, userId);
     const combineArrayOfMessages = messageByUser.concat(messageByConversation);
