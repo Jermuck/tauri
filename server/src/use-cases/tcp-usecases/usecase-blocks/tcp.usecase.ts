@@ -37,12 +37,12 @@ export class TcpUseCase {
     return userId;
   }
 
-  public async saveMessage(messageModel: MessageModel): Promise<MessageEntity & { userId: number }> {
+  public async saveMessage(messageModel: MessageModel): Promise<MessageEntity & { userId: number, conversationId: number }> {
     const isExistConversation = await this.userRepo.getById(messageModel.conversationId);
     const isExistUser = await this.userRepo.getById(messageModel.userId);
     if (!isExistUser || !isExistConversation) throw new WsException('Not found conversation');
     const newMessage = await this.messageRepo.create(messageModel);
-    return { userId: messageModel.userId, ...newMessage };
+    return { userId: messageModel.userId, conversationId: messageModel.conversationId, ...newMessage };
   }
 
   public async getMessages(userId: number, conversationId: number): Promise<MessageEntity[]> {

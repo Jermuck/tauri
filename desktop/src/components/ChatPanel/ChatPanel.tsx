@@ -1,12 +1,15 @@
-import { Box, Image, Input } from "@hope-ui/solid";
 import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal, For } from "solid-js";
-import { getUser, setUser} from "../../../store/UserStore/user.store";
+import { getUser } from "../../../store/UserStore/user.store";
 import { IResponseRoom, IUser } from "../../../types/index.types";
 import { IUserListItem, UserListItem } from "../UserListItem/UsersList";
 import { getAsyncUsers } from "./HttpHookForGetUsers/http.hook";
-import Polygon from "./images/Polygon.svg";
 import { getAsyncOpenRooms } from "./HttpHookForGetOpenRooms/http.hook";
+import { ISocketMessageResponse } from "../../../types/index.types";
+import { IMyMessage } from "../../UI/MyMessage/MyMessage";
+import {Box, Input, Image} from "@hope-ui/solid";
+import Polygon from "./images/Polygon.svg";
+import { socket} from "../../Page/HomePage/HomePage";
 
 export const ChatPanel = () => {
   const nav = useNavigate();
@@ -21,11 +24,11 @@ export const ChatPanel = () => {
     }));
   };
 
-  function sortByUserId(prev: IUserListItem[], users: IUser[], searchParam: string): IUserListItem[]{
+  function sortByUserId(prev: IUserListItem[], users: IUser[], searchParam: string): IUserListItem[] {
     const arrayOfuserId = prev.map(el => el.id);
-      for(const user of users){
-        if(!arrayOfuserId.includes(user.id)) prev.push(user);
-      };
+    for (const user of users) {
+      if (!arrayOfuserId.includes(user.id)) prev.push(user);
+    };
     return prev.filter(el => el.username.includes(searchParam) && el.id !== getUser()?.id);
   };
 
@@ -43,6 +46,16 @@ export const ChatPanel = () => {
     const users = await getAsyncUsers();
     setUsers(prev => sortByUserId(prev, users, searchParam));
   };
+
+  socket.on('message', (msg:ISocketMessageResponse<IMyMessage>) => {
+    console.log(msg.data)
+    setUsers(prev => prev.map(userMessage => {
+      return msg.data.conversationId === userMessage.id || msg.data.userId === userMessage.id
+      ? {...userMessage, time: new Date(msg.data.time), msg: msg.data.message}
+      : userMessage;
+    }));
+    console.log(getUsers())
+  })
 
   return (
     <Box

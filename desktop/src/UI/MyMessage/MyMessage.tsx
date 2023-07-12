@@ -7,6 +7,7 @@ export interface IMyMessage {
   userId: number;
   time: Date;
   roomId: number;
+  conversationId:number;
 }
 
 export const MyMessage: Component<IMyMessage> = ({

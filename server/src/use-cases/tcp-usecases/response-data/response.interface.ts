@@ -17,6 +17,9 @@ export class IMessageResponse {
 
     @ApiProperty()
     public roomId: number;
+
+    @ApiProperty()
+    public conversationId:number;
 };
 
 

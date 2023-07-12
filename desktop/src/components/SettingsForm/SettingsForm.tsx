@@ -4,9 +4,8 @@ import { getUser } from "../../../store/UserStore/user.store";
 import { useUpdateProfile } from "../../hooks/HttpUpdateProfileHook/http.hook";
 import { AvatarChange } from "../../UI/AvatarChange/AvatarChange";
 import { SettingItem } from "../../UI/SettingItem/SettingItem";
-import { ModalChangeAvatar } from "../ModalChangeAvatar/ModalChangeAvatar";
 import { useLogout } from "./HttpHookForLogout/http.hook";
-import { getProfile, setProfile } from "../../../store/ProfileStore/profile.store";
+import { getProfile } from "../../../store/ProfileStore/profile.store";
 import { onMount } from "solid-js";
 
 export const SettingsForm = () => {

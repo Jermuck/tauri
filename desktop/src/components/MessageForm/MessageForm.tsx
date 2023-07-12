@@ -5,17 +5,11 @@ import Attach from "./images/Attach.svg";
 import { Chat } from "../Chat/chat";
 import { createEffect, createSignal } from "solid-js";
 import { IMyMessage } from "../../UI/MyMessage/MyMessage";
-import { io } from "socket.io-client";
 import { CreateDtoMessage, ISocketMessageResponse } from "../../../types/index.types";
 import { getAsyncMessages } from "./HttpHookForGetMessages/hook.http";
+import { socket } from "../../Page/HomePage/HomePage";
 
 export const MessageForm = () => {
-  const socket = io('http://localhost:8080', {
-    extraHeaders: {
-      Authorization: `Bearer ${localStorage.getItem('access')}`
-    }
-  });
-
   const [getMessages, setMessages] = createSignal<IMyMessage[]>([]);
   const [getValue, setValue] = createSignal<string>('');
 
@@ -27,7 +21,7 @@ export const MessageForm = () => {
       message: msg,
     };
     socket.emit('msgToServer', newMessage);
-    setValue('')
+    setValue('');
   };
 
   socket.on('message', (msg: ISocketMessageResponse<IMyMessage>) => {
