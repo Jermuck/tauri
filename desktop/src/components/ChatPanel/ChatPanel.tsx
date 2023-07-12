@@ -48,13 +48,11 @@ export const ChatPanel = () => {
   };
 
   socket.on('message', (msg:ISocketMessageResponse<IMyMessage>) => {
-    console.log(msg.data)
     setUsers(prev => prev.map(userMessage => {
       return msg.data.conversationId === userMessage.id || msg.data.userId === userMessage.id
       ? {...userMessage, time: new Date(msg.data.time), msg: msg.data.message}
       : userMessage;
     }));
-    console.log(getUsers())
   })
 
   return (
