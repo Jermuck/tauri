@@ -24,7 +24,7 @@ export class TcpUseCase {
   private convertToUserOpenMessageChatList(array: RoomWithUserAndMessages[]){
     return array.map<UserOpenRoomResponse>(el => ({
       user: el.conversation,
-      lastMessage: el.messageObject[0]
+      lastMessage: el.messageObject[el.messageObject.length - 1]
     }))
   }
 

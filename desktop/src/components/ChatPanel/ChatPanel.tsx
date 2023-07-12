@@ -1,7 +1,7 @@
 import { Box, Image, Input } from "@hope-ui/solid";
 import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal, For } from "solid-js";
-import { getUser, setUser } from "../../../store/UserStore/user.store";
+import { getUser, setUser} from "../../../store/UserStore/user.store";
 import { IResponseRoom, IUser } from "../../../types/index.types";
 import { IUserListItem, UserListItem } from "../UserListItem/UsersList";
 import { getAsyncUsers } from "./HttpHookForGetUsers/http.hook";
@@ -19,21 +19,29 @@ export const ChatPanel = () => {
       msg: el.lastMessage.message,
       time: new Date(el.lastMessage.time)
     }));
-  }
+  };
+
+  function sortByUserId(prev: IUserListItem[], users: IUser[], searchParam: string): IUserListItem[]{
+    const arrayOfuserId = prev.map(el => el.id);
+      for(const user of users){
+        if(!arrayOfuserId.includes(user.id)) prev.push(user);
+      };
+    return prev.filter(el => el.username.includes(searchParam) && el.id !== getUser()?.id);
+  };
 
   createEffect(async () => {
     const openRooms = await getAsyncOpenRooms();
     setUsers(convertToIUserListItem(openRooms));
-  })
+  });
 
   async function usersHandler(searchParam: string): Promise<void> {
-    if (searchParam.length === 0) {
+    if (!searchParam.length) {
       const openRooms = await getAsyncOpenRooms();
       setUsers(convertToIUserListItem(openRooms));
       return;
-    }
+    };
     const users = await getAsyncUsers();
-    setUsers(users.filter(el => el.username.includes(searchParam) && el.id !== getUser()?.id));
+    setUsers(prev => sortByUserId(prev, users, searchParam));
   };
 
   return (
