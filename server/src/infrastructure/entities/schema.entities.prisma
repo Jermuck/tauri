@@ -48,7 +48,7 @@ model RoomEntity {
 
 model MessageEntity{
   id Int @unique @default(autoincrement())
-  room RoomEntity @relation(fields: [roomId], references: [id])
+  room RoomEntity @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId Int
   message String
   time DateTime

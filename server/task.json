@@ -1,6 +1,7 @@
 {
-    "create Catch for UseCaseTcp": true,
-    "add get messages in front": false,
-    "add set userId in tcp controller": true,
-    "add change message in front and backend": false
+    "k8s": false,
+    "add inteceptor": true,
+    "clear room": false,
+    "add 'Enter' send message": true,
+    "add scroll in chat list": true
 }

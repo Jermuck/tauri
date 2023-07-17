@@ -5,6 +5,7 @@ import { setCompanion } from "../../../store/CompanionStore/companion.store";
 export interface IUserListItem {
   id: number;
   username: string;
+  roomId?:number;
   msg?: string;
   time?: Date;
 }

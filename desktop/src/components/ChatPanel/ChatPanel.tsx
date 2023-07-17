@@ -7,9 +7,10 @@ import { getAsyncUsers } from "./HttpHookForGetUsers/http.hook";
 import { getAsyncOpenRooms } from "./HttpHookForGetOpenRooms/http.hook";
 import { ISocketMessageResponse } from "../../../types/index.types";
 import { IMyMessage } from "../../UI/MyMessage/MyMessage";
-import {Box, Input, Image} from "@hope-ui/solid";
+import { Box, Input, Image } from "@hope-ui/solid";
 import Polygon from "./images/Polygon.svg";
-import { socket} from "../../Page/HomePage/HomePage";
+import { socket } from "../../Page/HomePage/HomePage";
+import { getCompanion } from "../../../store/CompanionStore/companion.store";
 
 export const ChatPanel = () => {
   const nav = useNavigate();
@@ -19,6 +20,7 @@ export const ChatPanel = () => {
     return array.map<IUserListItem>(el => ({
       id: el.user.id,
       username: el.user.username,
+      roomId: el.lastMessage.roomId,
       msg: el.lastMessage.message,
       time: new Date(el.lastMessage.time)
     }));
@@ -47,12 +49,19 @@ export const ChatPanel = () => {
     setUsers(prev => sortByUserId(prev, users, searchParam));
   };
 
-  socket.on('message', (msg:ISocketMessageResponse<IMyMessage>) => {
+  socket.on('message', (socketData: ISocketMessageResponse<IMyMessage>) => {
+    let isFind = false;
     setUsers(prev => prev.map(userMessage => {
-      return msg.data.conversationId === userMessage.id || msg.data.userId === userMessage.id
-      ? {...userMessage, time: new Date(msg.data.time), msg: msg.data.message}
-      : userMessage;
+      if (socketData.data.conversationId === userMessage.id || socketData.data.userId === userMessage.id) {
+        isFind = true;
+        return { ...userMessage, time: new Date(socketData.data.time), msg: socketData.data.message }
+      }
+      return userMessage;
     }));
+    console.log(socketData)
+    if (!isFind) {
+      setUsers(prev => [...prev, { ...socketData.data, time: new Date(socketData.data.time), msg: socketData.data.message }])
+    };
   })
 
   return (
@@ -91,7 +100,7 @@ export const ChatPanel = () => {
         onInput={el => usersHandler(el.target.value)}
       />
 
-      <Box width={310} marginTop={20}>
+      <Box width={310} height={'100vh'} marginTop={20} overflow={'auto'}>
         <For each={getUsers()}>{
           user =>
             <UserListItem {...user} />}</For>

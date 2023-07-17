@@ -39,7 +39,7 @@ export class MessageRepository implements MessageAbstractRepository {
       }
     })
   };
-  public async findRoom(userId: number, conversationId: number): Promise<RoomEntity> {
+  public async findOneRoom(userId: number, conversationId: number): Promise<RoomEntity> {
     const room = this.prisma.roomEntity.findFirst({
       where: {
         userId, conversationId
@@ -49,7 +49,7 @@ export class MessageRepository implements MessageAbstractRepository {
   };
 
   public async create(messageModel: MessageModel): Promise<MessageEntity> {
-    const isExistRoom = await this.findRoom(messageModel.userId, messageModel.conversationId);
+    const isExistRoom = await this.findOneRoom(messageModel.userId, messageModel.conversationId);
     if (isExistRoom) {
       return await this.createMessage(isExistRoom.id, messageModel);
     }
@@ -64,7 +64,7 @@ export class MessageRepository implements MessageAbstractRepository {
   };
 
   public async getAll(userId: number, conversationId: number): Promise<MessageOfUserId[]> {
-    const room = await this.findRoom(userId, conversationId);
+    const room = await this.findOneRoom(userId, conversationId);
     if (!room) return [];
     const messagesOfTable = await this.prisma.messageEntity.findMany({
       where: { roomId: room.id }, include: { room: true }
@@ -73,9 +73,17 @@ export class MessageRepository implements MessageAbstractRepository {
     return messages;
   };
 
-  public async findRoomByUserId(userId: number): Promise<RoomWithUserAndMessages[]> {
+  public async findRoomsByUserIdWithRelation(id:number, searchParam: 'userId' | 'conversationId'): Promise<RoomWithUserAndMessages[]> {
     return await this.prisma.roomEntity.findMany({
-      where: { userId }, include: { messageObject: true, conversation: true }
+      where: {
+        [searchParam]: id
+      }, include: { messageObject: true, conversation: true }
+    });
+  };
+
+  public async deleteRoom(roomId:number): Promise<void> {
+    await this.prisma.roomEntity.deleteMany({
+      where: {id: roomId},
     });
   };
 }

@@ -24,6 +24,11 @@ export const MessageForm = () => {
     setValue('');
   };
 
+  function onEnter(event: KeyboardEvent):void{
+    if(event.key !== 'Enter') return;
+    createMessage(getValue());
+  }
+
   socket.on('message', (msg: ISocketMessageResponse<IMyMessage>) => {
     const { data } = msg;
     setMessages(prev => [...prev, { ...data, time: new Date(data.time) }]);
@@ -34,7 +39,8 @@ export const MessageForm = () => {
     //@ts-ignore
     const messages = await getAsyncMessages(getCompanion()?.id);
     setMessages(messages);
-  })
+  });
+
   return (
     <Box
       width={'100%'}
@@ -50,6 +56,7 @@ export const MessageForm = () => {
             display={'flex'}
             flexDirection={'column'}
             justifyContent={'space-between'}
+            onKeyUp={onEnter}
           >
             <Box
               height={77}

@@ -6,7 +6,6 @@ import { MessageModel } from "src/domain/models/MessageModel/message.model";
 import { MessageAbstractRepository, RoomWithUserAndMessages } from "src/domain/repositories/message-repository/message-repository.abstract";
 import { UserAbstractReposiotory } from "src/domain/repositories/user-repository/user-repository.abstract";
 import { UserOpenRoomResponse } from "../response-data/response.interface";
-import { ResultAuthorization } from "src/use-cases/auth-usecases/response-data/response.interfaces";
 
 export class TcpUseCase {
   constructor(
@@ -21,11 +20,18 @@ export class TcpUseCase {
     return 0;
   };
 
-  private convertToUserOpenMessageChatList(array: RoomWithUserAndMessages[]){
-    return array.map<UserOpenRoomResponse>(el => ({
-      user: el.conversation,
-      lastMessage: el.messageObject[el.messageObject.length - 1]
-    }))
+  private async convertToUserOpenMessageChatList(array: RoomWithUserAndMessages[]): Promise<UserOpenRoomResponse[]> {
+    const sortedArray: Array<UserOpenRoomResponse> = [];
+    for (const element of array) {
+      if (!sortedArray.find(el => el.user.id === element.userId)) {
+        const messages = await this.getMessages(element.userId, element.conversationId);
+        sortedArray.push({
+          user: element.conversation,
+          lastMessage: messages[messages.length - 1]
+        });
+      }
+    };
+    return sortedArray;
   }
 
   public getUserId(header: string): number | null {
@@ -37,16 +43,16 @@ export class TcpUseCase {
     return userId;
   }
 
-  public async saveMessage(messageModel: MessageModel): Promise<MessageEntity & { userId: number, conversationId: number }> {
+  public async saveMessage(messageModel: MessageModel): Promise<MessageEntity & { userId: number, conversationId: number, username: string }> {
     const isExistConversation = await this.userRepo.getById(messageModel.conversationId);
     const isExistUser = await this.userRepo.getById(messageModel.userId);
     if (!isExistUser || !isExistConversation) throw new WsException('Not found conversation');
     const newMessage = await this.messageRepo.create(messageModel);
-    return { userId: messageModel.userId, conversationId: messageModel.conversationId, ...newMessage };
+    return { userId: messageModel.userId, conversationId: messageModel.conversationId, ...newMessage, username: isExistUser.username };
   }
 
   public async getMessages(userId: number, conversationId: number): Promise<MessageEntity[]> {
-    const isExistDialog = await this.messageRepo.findRoom(userId, conversationId);
+    const isExistDialog = await this.messageRepo.findOneRoom(userId, conversationId);
     if (!isExistDialog) throw new BadRequestException('Not found room');
     const messageByUser = await this.messageRepo.getAll(userId, conversationId);
     const messageByConversation = await this.messageRepo.getAll(conversationId, userId);
@@ -56,9 +62,20 @@ export class TcpUseCase {
   };
 
 
-  public async getRoomsWithLastMessage(userId: number): Promise<UserOpenRoomResponse[]> {
-    const rooms = await this.messageRepo.findRoomByUserId(userId);
-    const result = this.convertToUserOpenMessageChatList(rooms);
+  public async getRoomsWithLastMessage(userId: number): Promise<UserOpenRoomResponse[] | any> {
+    const roomsWhereUserNotConversation = await this.messageRepo.findRoomsByUserIdWithRelation(userId, 'userId');
+    const roomsWhereUserConversation = await this.messageRepo.findRoomsByUserIdWithRelation(userId, 'conversationId');
+    const result = await this.convertToUserOpenMessageChatList(roomsWhereUserNotConversation.concat(roomsWhereUserConversation));
     return result;
+  };
+
+  public async deleteRoom(roomId: number, userId: number): Promise<string> {
+    const roomsWhereUserExistNotCoversation = await this.messageRepo.findRoomsByUserIdWithRelation(userId, 'userId');
+    const roomsWhereUserExistConversation = await this.messageRepo.findRoomsByUserIdWithRelation(userId, "conversationId");
+    const generalRooms = roomsWhereUserExistConversation.concat(roomsWhereUserExistNotCoversation);
+    const isFind = generalRooms.find(el => el.id === roomId);
+    if (!isFind) throw new BadRequestException('Not found this room');
+    await this.messageRepo.deleteRoom(roomId);
+    return 'success';
   }
 }
