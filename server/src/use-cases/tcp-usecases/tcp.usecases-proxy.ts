@@ -5,6 +5,7 @@ import { UserRepository } from "src/infrastructure/repositories/users-repository
 import { TcpAdapterModule } from "src/infrastructure/services/tsp-service/tcp.module";
 import { TcpService } from "src/infrastructure/services/tsp-service/tcp.service";
 import { TcpUseCase } from "./usecase-blocks/tcp.usecase";
+import { RoomRepository } from "src/infrastructure/repositories/room-repository/room.repository";
 
 export class TcpUseCaseModule {
   static TCP = 'TCP';
@@ -14,12 +15,13 @@ export class TcpUseCaseModule {
       module: TcpUseCaseModule,
       providers: [
         {
-          inject: [TcpService, UserRepository, MessageRepository],
+          inject: [TcpService, UserRepository, MessageRepository, RoomRepository],
           useFactory: (
             tcpService: TcpService,
             userRepo: UserRepository,
-            messageRepo: MessageRepository
-          ) => new TcpUseCase(tcpService, userRepo, messageRepo),
+            messageRepo: MessageRepository,
+            roomRepo: RoomRepository
+          ) => new TcpUseCase(tcpService, userRepo, messageRepo, roomRepo),
           provide: this.TCP
         }
       ],

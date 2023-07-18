@@ -4,6 +4,7 @@ import { Module } from "@nestjs/common"
 import { PrismaService } from "../config/prisma.config";
 import { ProfileReposiory } from "./profile-repository/profile.repository";
 import { MessageRepository } from "./message-repository/message.repository";
+import { RoomRepository } from "./room-repository/room.repository";
 
 @Module({
   providers: [
@@ -11,13 +12,15 @@ import { MessageRepository } from "./message-repository/message.repository";
     TokenRepository,
     PrismaService,
     ProfileReposiory,
-    MessageRepository
+    MessageRepository,
+    RoomRepository
   ],
   exports: [
     UserRepository,
     TokenRepository,
     ProfileReposiory,
-    MessageRepository
+    MessageRepository,
+    RoomRepository
   ]
 })
 export class RepositoryModule { };

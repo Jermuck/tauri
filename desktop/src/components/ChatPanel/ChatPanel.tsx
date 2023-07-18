@@ -1,60 +1,35 @@
 import { useNavigate } from "@solidjs/router";
-import { createEffect, createSignal, For, onMount } from "solid-js";
-import { getUser } from "../../../store/UserStore/user.store";
-import { IResponseRoom, IUser } from "../../../types/index.types";
-import { IUserListItem, UserListItem } from "../UserListItem/UsersList";
+import { createSignal, For, onMount } from "solid-js";
+import { UserListItem } from "../UserListItem/UsersList";
 import { getAsyncUsers } from "./HttpHookForGetUsers/http.hook";
-import { getAsyncOpenRooms } from "./HttpHookForGetOpenRooms/http.hook";
 import { Box, Input, Image } from "@hope-ui/solid";
 import Polygon from "./images/Polygon.svg";
+import { useOpenRoomsFilter } from "./useOpenRoomsFilter";
+import { getRooms, setRooms } from "../../../store/openRoomStore/room.store";
 
 export const ChatPanel = () => {
   const nav = useNavigate();
-  const [getUsers, setUsers] = createSignal<IUserListItem[]>([]);
+  const {
+    getOpenRoomsWithFilter,
+    convertToIUserListItem,
+    sortByUserId
+  } = useOpenRoomsFilter();
 
-  function convertToIUserListItem(array: IResponseRoom[]): IUserListItem[] {
-    return array.map<IUserListItem>(el => ({
-      id: el.user.id,
-      username: el.user.username,
-      roomId: el.lastMessage.roomId,
-      msg: el.lastMessage.message,
-      time: new Date(el.lastMessage.time)
-    }));
-  };
-
-  function sortByUserId(prev: IUserListItem[], users: IUser[], searchParam: string): IUserListItem[] {
-    const arrayOfuserId = prev.map(el => el.id);
-    for (const user of users) {
-      if (!arrayOfuserId.includes(user.id)) prev.push(user);
-    };
-    return prev.filter(el => el.username.includes(searchParam) && el.id !== getUser()?.id);
-  };
-
-  createEffect(async () => {
-    const openRooms = (await getAsyncOpenRooms()).map<IResponseRoom>(el => {
-      if(el.user.id == getUser()?.id){
-        return {...el, conversation: el.user, user: el.conversation}
-      };
-      return el;
-    });
-    const includeExceptionRooms: IResponseRoom[] = [];
-    for (let user of openRooms){
-      if(!includeExceptionRooms.find(el => el.user.id === user.user.id)){
-        includeExceptionRooms.push(user);
-      }
-    }
-    setUsers(convertToIUserListItem(includeExceptionRooms));
+  onMount(async () => {
+    const openRooms = await getOpenRoomsWithFilter();
+    setRooms(convertToIUserListItem(openRooms));
   });
 
   async function usersHandler(searchParam: string): Promise<void> {
     if (!searchParam.length) {
-      const openRooms = await getAsyncOpenRooms();
-      setUsers(convertToIUserListItem(openRooms));
+      const openRooms = await getOpenRoomsWithFilter();
+      setRooms(convertToIUserListItem(openRooms));
       return;
     };
     const users = await getAsyncUsers();
-    setUsers(prev => sortByUserId(prev, users, searchParam));
+    setRooms(sortByUserId(getRooms(), users, searchParam));
   };
+
 
   return (
     <Box
@@ -93,9 +68,9 @@ export const ChatPanel = () => {
       />
 
       <Box width={310} height={'100vh'} marginTop={20} overflow={'auto'}>
-        <For each={getUsers()}>{
-          user =>
-            <UserListItem {...user} />}</For>
+        <For each={getRooms()}>{
+          room =>
+            <UserListItem {...room} />}</For>
       </Box>
     </Box>
   )

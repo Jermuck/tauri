@@ -51,7 +51,7 @@ export class ChatGateway implements OnGatewayConnection {
     const payload: MessageModel = { ...dto, userId: socket.data.id };
     const message = await this.tcpUseCaseInstance.saveMessage(payload);
     const wsResponse = new WsResponse('message', message, "success");
-    if (client) client.send(wsResponse);
+    if (client) {client.send(wsResponse)};
     socket.send(wsResponse)
   };
 
