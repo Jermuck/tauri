@@ -68,7 +68,7 @@ export class TcpUseCase {
   public async getRoomsWithLastMessage(userId: number): Promise<UserOpenRoomResponse[] | any> {
     const arrayRoomsWhereUserId = await this.roomRepo.findRoomsByUserIdWithRelation(userId, 'userId');
     const arrayRoomsWhereConversatioId = await this.roomRepo.findRoomsByUserIdWithRelation(userId, 'conversationId');
-    return this.convertToUserOpenMessageChatList(arrayRoomsWhereUserId)
+    return this.convertToUserOpenMessageChatList(arrayRoomsWhereUserId.concat(arrayRoomsWhereConversatioId));
   };
 
   public async deleteRoom(roomId: number, userId: number): Promise<string> {

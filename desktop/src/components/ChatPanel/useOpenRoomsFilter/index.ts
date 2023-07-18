@@ -2,6 +2,7 @@ import { IResponseRoom, IUser } from "../../../../types/index.types";
 import { IUserListItem } from "../../UserListItem/UsersList";
 import { getUser } from "../../../../store/UserStore/user.store";
 import { getAsyncOpenRooms } from "../HttpHookForGetOpenRooms/http.hook";
+import { getCompanion } from "../../../../store/CompanionStore/companion.store";
 
 interface IUseOpenRoomsFilter {
     convertToIUserListItem: (array: IResponseRoom[]) => IUserListItem[];
@@ -21,7 +22,24 @@ export const useOpenRoomsFilter = (): IUseOpenRoomsFilter => {
   };
 
   async function getOpenRoomsWithFilter(): Promise<IResponseRoom[]>{
-    return await getAsyncOpenRooms();
+    const openRooms = await getAsyncOpenRooms();
+    const updateRooms = openRooms.map<IResponseRoom>(el => {
+      if(el.conversation.id === getUser()?.id){
+        return {
+          ...el,
+          user: el.conversation,
+          conversation: el.user
+        }
+      };
+      return el;
+    });
+    const includeOpenRooms:IResponseRoom[] = [];
+    for(let client of updateRooms){
+      if(!includeOpenRooms.find(el => el.conversation.id === client.conversation.id)){
+        includeOpenRooms.push(client);
+      }
+    };
+    return includeOpenRooms;
   };
 
   function sortByUserId(prev: IUserListItem[], users: IUser[], searchParam: string): IUserListItem[] {
