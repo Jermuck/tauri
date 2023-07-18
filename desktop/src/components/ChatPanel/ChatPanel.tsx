@@ -1,16 +1,12 @@
 import { useNavigate } from "@solidjs/router";
-import { createEffect, createSignal, For } from "solid-js";
+import { createEffect, createSignal, For, onMount } from "solid-js";
 import { getUser } from "../../../store/UserStore/user.store";
 import { IResponseRoom, IUser } from "../../../types/index.types";
 import { IUserListItem, UserListItem } from "../UserListItem/UsersList";
 import { getAsyncUsers } from "./HttpHookForGetUsers/http.hook";
 import { getAsyncOpenRooms } from "./HttpHookForGetOpenRooms/http.hook";
-import { ISocketMessageResponse } from "../../../types/index.types";
-import { IMyMessage } from "../../UI/MyMessage/MyMessage";
 import { Box, Input, Image } from "@hope-ui/solid";
 import Polygon from "./images/Polygon.svg";
-import { socket } from "../../Page/HomePage/HomePage";
-import { getCompanion } from "../../../store/CompanionStore/companion.store";
 
 export const ChatPanel = () => {
   const nav = useNavigate();
@@ -35,8 +31,19 @@ export const ChatPanel = () => {
   };
 
   createEffect(async () => {
-    const openRooms = await getAsyncOpenRooms();
-    setUsers(convertToIUserListItem(openRooms));
+    const openRooms = (await getAsyncOpenRooms()).map<IResponseRoom>(el => {
+      if(el.user.id == getUser()?.id){
+        return {...el, conversation: el.user, user: el.conversation}
+      };
+      return el;
+    });
+    const includeExceptionRooms: IResponseRoom[] = [];
+    for (let user of openRooms){
+      if(!includeExceptionRooms.find(el => el.user.id === user.user.id)){
+        includeExceptionRooms.push(user);
+      }
+    }
+    setUsers(convertToIUserListItem(includeExceptionRooms));
   });
 
   async function usersHandler(searchParam: string): Promise<void> {
@@ -48,21 +55,6 @@ export const ChatPanel = () => {
     const users = await getAsyncUsers();
     setUsers(prev => sortByUserId(prev, users, searchParam));
   };
-
-  socket.on('message', (socketData: ISocketMessageResponse<IMyMessage>) => {
-    let isFind = false;
-    setUsers(prev => prev.map(userMessage => {
-      if (socketData.data.conversationId === userMessage.id || socketData.data.userId === userMessage.id) {
-        isFind = true;
-        return { ...userMessage, time: new Date(socketData.data.time), msg: socketData.data.message }
-      }
-      return userMessage;
-    }));
-    console.log(socketData)
-    if (!isFind) {
-      setUsers(prev => [...prev, { ...socketData.data, time: new Date(socketData.data.time), msg: socketData.data.message }])
-    };
-  })
 
   return (
     <Box

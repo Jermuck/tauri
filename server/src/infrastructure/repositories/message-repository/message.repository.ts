@@ -77,7 +77,7 @@ export class MessageRepository implements MessageAbstractRepository {
     return await this.prisma.roomEntity.findMany({
       where: {
         [searchParam]: id
-      }, include: { messageObject: true, conversation: true }
+      }, include: { messageObject: true, conversation: true, user: true }
     });
   };
 

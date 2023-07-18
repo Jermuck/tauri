@@ -7,7 +7,7 @@ export interface IMyMessage {
   userId: number;
   time: Date;
   roomId: number;
-  username:string;
+  username?:string;
   conversationId:number;
 }
 

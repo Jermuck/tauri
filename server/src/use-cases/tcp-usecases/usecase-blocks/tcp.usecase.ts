@@ -20,19 +20,18 @@ export class TcpUseCase {
     return 0;
   };
 
-  private async convertToUserOpenMessageChatList(array: RoomWithUserAndMessages[]): Promise<UserOpenRoomResponse[]> {
+  private async convertToUserOpenMessageChatList(array: RoomWithUserAndMessages[] ): Promise<UserOpenRoomResponse[]> {
     const sortedArray: Array<UserOpenRoomResponse> = [];
     for (const element of array) {
-      if (!sortedArray.find(el => el.user.id === element.userId)) {
-        const messages = await this.getMessages(element.userId, element.conversationId);
-        sortedArray.push({
-          user: element.conversation,
-          lastMessage: messages[messages.length - 1]
-        });
-      }
+      const messages = await this.getMessages(element.userId, element.conversationId);
+      sortedArray.push({
+        user: element.user,
+        conversation: element.conversation,
+        lastMessage: messages.at(-1)
+      });
     };
     return sortedArray;
-  }
+  };
 
   public getUserId(header: string): number | null {
     const arrayOfHeader = header.split(' ');
@@ -52,8 +51,9 @@ export class TcpUseCase {
   }
 
   public async getMessages(userId: number, conversationId: number): Promise<MessageEntity[]> {
-    const isExistDialog = await this.messageRepo.findOneRoom(userId, conversationId);
-    if (!isExistDialog) throw new BadRequestException('Not found room');
+    const isExistDialogByNotConversation = await this.messageRepo.findOneRoom(userId, conversationId);
+    const isExistDialogByConversation = await this.messageRepo.findOneRoom(conversationId, userId);
+    if (!isExistDialogByConversation && !isExistDialogByNotConversation) throw new BadRequestException('Not found room');
     const messageByUser = await this.messageRepo.getAll(userId, conversationId);
     const messageByConversation = await this.messageRepo.getAll(conversationId, userId);
     const combineArrayOfMessages = messageByUser.concat(messageByConversation);
@@ -63,10 +63,9 @@ export class TcpUseCase {
 
 
   public async getRoomsWithLastMessage(userId: number): Promise<UserOpenRoomResponse[] | any> {
-    const roomsWhereUserNotConversation = await this.messageRepo.findRoomsByUserIdWithRelation(userId, 'userId');
-    const roomsWhereUserConversation = await this.messageRepo.findRoomsByUserIdWithRelation(userId, 'conversationId');
-    const result = await this.convertToUserOpenMessageChatList(roomsWhereUserNotConversation.concat(roomsWhereUserConversation));
-    return result;
+    const arrayRoomsWhereUserId = await this.messageRepo.findRoomsByUserIdWithRelation(userId, 'userId');
+    const arrayRoomsWhereConversatioId = await this.messageRepo.findRoomsByUserIdWithRelation(userId, 'conversationId');
+    return this.convertToUserOpenMessageChatList(arrayRoomsWhereConversatioId.concat(arrayRoomsWhereUserId))
   };
 
   public async deleteRoom(roomId: number, userId: number): Promise<string> {

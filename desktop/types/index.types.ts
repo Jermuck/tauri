@@ -83,4 +83,5 @@ export interface IResponseGetMessages<T>{
 export interface IResponseRoom{
   user: IUser;
   lastMessage: Omit<IMyMessage, 'userId'>;
+  conversation: IUser;
 }

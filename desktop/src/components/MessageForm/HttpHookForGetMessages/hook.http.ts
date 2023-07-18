@@ -5,7 +5,7 @@ export const getAsyncMessages = async (conversationId:number): Promise<IMyMessag
     try{
         const apiInstance = MessageController.getInstance();
         const {data} = await apiInstance.getMessages(conversationId);
-        const messages = data.data.map(el => ({...el, time: new Date(el.time)}));
+        const messages = data.data.map<IMyMessage>(el => ({...el, time: new Date(el.time)}));
         return messages;
     }catch(err){
         console.log(err);

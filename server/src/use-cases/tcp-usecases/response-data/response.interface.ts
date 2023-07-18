@@ -29,4 +29,7 @@ export class UserOpenRoomResponse {
 
     @ApiProperty()
     public lastMessage: MessageEntity;
+
+    @ApiProperty()
+    public conversation: UserEntity;
 }

@@ -3,7 +3,7 @@ import { getCompanion } from "../../../store/CompanionStore/companion.store";
 import { Circle } from "./images/Circle";
 import Attach from "./images/Attach.svg";
 import { Chat } from "../Chat/chat";
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, onMount } from "solid-js";
 import { IMyMessage } from "../../UI/MyMessage/MyMessage";
 import { CreateDtoMessage, ISocketMessageResponse } from "../../../types/index.types";
 import { getAsyncMessages } from "./HttpHookForGetMessages/hook.http";
