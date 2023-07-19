@@ -1,6 +1,6 @@
 import { useNavigate } from "@solidjs/router";
 import { For, onMount } from "solid-js";
-import { UserListItem } from "../UserListItem/UsersList";
+import { UserListItem } from "../UserListItem/UsersListItem";
 import { getAsyncUsers } from "./HttpHookForGetUsers/http.hook";
 import { Box, Input, Image } from "@hope-ui/solid";
 import Polygon from "./images/Polygon.svg";

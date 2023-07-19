@@ -16,6 +16,12 @@ export const UserListItem: Component<IUserListItem> = ({
   const getMinutes = (min: number | undefined) => { 
     if(!min) return;
     return min.toString().length === 1 ? `0${min}` : min.toString() 
+  };
+
+  const convertainMessage = (msg: string | undefined): undefined | string => {
+    if(!msg) return undefined;
+    if(msg.length > 25 ) return msg?.slice(0, 25) + '...';
+    return msg;
   }
   return (
     <Box
@@ -35,7 +41,7 @@ export const UserListItem: Component<IUserListItem> = ({
         marginLeft={20}
       >
         <Text color={'#E2E2E4'} fontSize={15}>{username}</Text>
-        <Text color={'#9898B0'} fontSize={14}>{msg}</Text>
+        <Text color={'#9898B0'} fontSize={14}>{convertainMessage(msg)}</Text>
       </Box>
       <Text color={'#717790'} fontSize={11} marginBottom={27}>{
         time && time?.getHours() + ':' + getMinutes(time?.getMinutes())

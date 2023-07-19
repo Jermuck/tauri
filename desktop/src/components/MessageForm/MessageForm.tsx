@@ -9,6 +9,7 @@ import { CreateDtoMessage, ISocketMessageResponse } from "../../../types/index.t
 import { getAsyncMessages } from "./HttpHookForGetMessages/hook.http";
 import { socket } from "../../Page/HomePage/HomePage";
 import { setMessageByRoom } from "../../../store/openRoomStore/room.store";
+import { getUser } from "../../../store/UserStore/user.store";
 
 export const MessageForm = () => {
   const [getMessages, setMessages] = createSignal<IMyMessage[]>([]);
@@ -32,8 +33,10 @@ export const MessageForm = () => {
 
   socket.on('message', (msg: ISocketMessageResponse<IMyMessage>) => {
     const { data } = msg;
-    setMessages(prev => [...prev, { ...data, time: new Date(data.time) }]);
-    setMessageByRoom(data.userId, data.conversationId, data.message);
+    if(data.userId === getCompanion()?.id || data.userId === getUser()?.id){
+      setMessages(prev => [...prev, { ...data, time: new Date(data.time) }]);
+    }
+    setMessageByRoom(data.userId, data.conversationId, data);
   });
 
   createEffect(async () => {

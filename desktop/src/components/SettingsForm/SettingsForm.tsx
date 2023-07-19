@@ -6,14 +6,14 @@ import { AvatarChange } from "../../UI/AvatarChange/AvatarChange";
 import { SettingItem } from "../../UI/SettingItem/SettingItem";
 import { useLogout } from "./HttpHookForLogout/http.hook";
 import { getProfile } from "../../../store/ProfileStore/profile.store";
-import { onMount } from "solid-js";
+import { createEffect, onMount } from "solid-js";
 
 export const SettingsForm = () => {
   const logout = useLogout();
   const nav = useNavigate();
   const updateProfile = useUpdateProfile();
 
-  onMount(async () => await updateProfile());
+  createEffect(async () => await updateProfile());
   return (
     <Box
       display={'flex'}
