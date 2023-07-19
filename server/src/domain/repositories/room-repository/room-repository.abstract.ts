@@ -7,4 +7,5 @@ export abstract class RoomAbstractRepository{
   abstract findRoomsByUserIdWithRelation(id:number, searchParam: 'userId' | 'conversationId'): Promise<RoomWithUserAndMessages[]>;
   abstract deleteRoom(roomId:number): Promise<void>;
   abstract createRoom(userId: number, conversationId: number): Promise<RoomEntity>;
+  abstract findRoomByRoomId(roomId: number): Promise<RoomEntity>;
 }

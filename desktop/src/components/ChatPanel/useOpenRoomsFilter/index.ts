@@ -2,7 +2,6 @@ import { IResponseRoom, IUser } from "../../../../types/index.types";
 import { IUserListItem } from "../../UserListItem/UsersListItem";
 import { getUser } from "../../../../store/UserStore/user.store";
 import { getAsyncOpenRooms } from "../HttpHookForGetOpenRooms/http.hook";
-import { getCompanion } from "../../../../store/CompanionStore/companion.store";
 
 interface IUseOpenRoomsFilter {
     convertToIUserListItem: (array: IResponseRoom[]) => IUserListItem[];

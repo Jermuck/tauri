@@ -7,6 +7,7 @@ import { WsResponse } from 'types/index.types';
 export class WebsocketExceptionFilter extends BaseWsExceptionFilter {
   catch(exception: WsException | HttpException, host: ArgumentsHost): void {
     const client = host.switchToWs().getClient() as Socket;
-    client.send(new WsResponse('error', {}, exception.message));
+    client.to(client.id).emit('error',new WsResponse('error', {}, exception.message));
+    console.log("Da")
   }
 }

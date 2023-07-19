@@ -5,7 +5,7 @@ import { TcpAbstractAdapter } from "src/domain/adapters/tcp-adapter/tcp.adapter"
 import { MessageModel } from "src/domain/models/MessageModel/message.model";
 import { MessageAbstractRepository } from "src/domain/repositories/message-repository/message-repository.abstract";
 import { UserAbstractReposiotory } from "src/domain/repositories/user-repository/user-repository.abstract";
-import { UserOpenRoomResponse } from "../response-data/response.interface";
+import { DeleteRoomResponse, UserOpenRoomResponse } from "../response-data/response.interface";
 import { RoomAbstractRepository } from "src/domain/repositories/room-repository/room-repository.abstract";
 import { RoomWithUserAndMessages } from "src/domain/repositories/room-repository/room-repository.abstract";
 
@@ -48,7 +48,7 @@ export class TcpUseCase {
   public async saveMessage(messageModel: MessageModel): Promise<MessageEntity & { userId: number, conversationId: number, username: string }> {
     const isExistConversation = await this.userRepo.getById(messageModel.conversationId);
     const isExistUser = await this.userRepo.getById(messageModel.userId);
-    if (!isExistUser || !isExistConversation) throw new WsException('Not found conversation');
+    if (!isExistUser || !isExistConversation) return;
     const newMessage = await this.messageRepo.create(messageModel);
     return { userId: messageModel.userId, conversationId: messageModel.conversationId, ...newMessage, username: isExistUser.username };
   }
@@ -71,13 +71,17 @@ export class TcpUseCase {
     return this.convertToUserOpenMessageChatList(arrayRoomsWhereUserId.concat(arrayRoomsWhereConversatioId));
   };
 
-  public async deleteRoom(roomId: number, userId: number): Promise<string> {
-    const roomsWhereUserExistNotCoversation = await this.roomRepo.findRoomsByUserIdWithRelation(userId, 'userId');
-    const roomsWhereUserExistConversation = await this.roomRepo.findRoomsByUserIdWithRelation(userId, "conversationId");
-    const generalRooms = roomsWhereUserExistConversation.concat(roomsWhereUserExistNotCoversation);
-    const isFind = generalRooms.find(el => el.id === roomId);
-    if (!isFind) throw new BadRequestException('Not found this room');
+  public async deleteRoom(roomId: number, userId: number): Promise<DeleteRoomResponse> {
+    const isExistRoom = await this.roomRepo.findRoomByRoomId(roomId);
+    if(!isExistRoom) return;
+    const arrayOfRoomByUserId = [isExistRoom.userId, isExistRoom.conversationId];
+    if(!arrayOfRoomByUserId.includes(userId)) return;
     await this.roomRepo.deleteRoom(roomId);
-    return 'success';
-  }
-}
+    const pairRoom = await this.roomRepo.findOneRoom(isExistRoom.conversationId, userId);
+    if(pairRoom) await this.roomRepo.deleteRoom(pairRoom.id);
+    return {
+      userRoomId: roomId,
+      conversationRoomId: pairRoom ? pairRoom.id : null
+    };
+  };
+};

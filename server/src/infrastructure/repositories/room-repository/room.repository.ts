@@ -38,4 +38,9 @@ export class RoomRepository implements RoomAbstractRepository {
         })
     };
 
+    public async findRoomByRoomId(roomId: number): Promise<RoomEntity>{
+        return await this.prisma.roomEntity.findUnique({
+            where: { id: roomId}
+        });
+    }
 }

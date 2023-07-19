@@ -4,7 +4,7 @@ import { MessageController } from "../../../http/controllers/MessageController/m
 
 export const getAsyncMessages = async (conversationId:number): Promise<IMyMessage[]>=> {
     try{
-        setLoading(true)
+        setLoading(true);
         const apiInstance = MessageController.getInstance();
         const {data} = await apiInstance.getMessages(conversationId);
         const messages = data.data.map<IMyMessage>(el => ({...el, time: new Date(el.time)}));

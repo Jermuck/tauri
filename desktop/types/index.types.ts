@@ -84,4 +84,14 @@ export interface IResponseRoom{
   user: IUser;
   lastMessage: Omit<IMyMessage, 'userId'>;
   conversation: IUser;
+};
+
+export interface IDeleteRoomDto {
+  roomId: number;
+  conversationId: number | null;
+};
+
+export interface IDeleteRoomResponse{
+  userRoomId: number;
+  conversationRoomId: number;
 }

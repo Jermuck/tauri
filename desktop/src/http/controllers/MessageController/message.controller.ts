@@ -15,4 +15,5 @@ export class MessageController{
     public async getOpenRooms(): Promise<AxiosResponse<IResponseGetMessages<IResponseRoom[]>>>{
         return await $api.get<IResponseGetMessages<IResponseRoom[]>>('/messages/rooms');
     };
+
 }

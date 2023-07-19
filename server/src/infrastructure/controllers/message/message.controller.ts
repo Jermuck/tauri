@@ -42,11 +42,4 @@ export class MessageController{
         return await this.tcpInstance.getRoomsWithLastMessage(dto._id);
     };
 
-
-    @Delete('/rooms/delete/:roomId')
-    @HttpCode(200)
-    @UseGuards(AuthGuard)
-    public async delete(@Param() param: RoomParamDto, @Body() dto: BodyCanActivate){
-        return await this.tcpInstance.deleteRoom(+param.roomId, dto._id);
-    }
 };
