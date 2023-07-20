@@ -34,6 +34,5 @@ export const setMessageRoomIncludeDelete = (data: IDeleteRoomResponse) => {
         if(client.roomId !== data.userRoomId && client.roomId !== data.conversationRoomId){
             return client;
         };
-        console.log("Da")
     }))
 }

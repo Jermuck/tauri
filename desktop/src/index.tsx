@@ -3,14 +3,14 @@ import { render } from "solid-js/web";
 import { Router, Route, Routes, Navigate } from "@solidjs/router"
 import "./styles.css";
 import { HopeProvider } from "@hope-ui/solid";
-import { AuthPage } from "../src/Page/AuthPage/AuthPage"
-import { HomePage } from "./Page/HomePage/HomePage";
+import { AuthPage } from "./page/AuthPage/AuthPage"
+import { HomePage } from "./page/HomePage/HomePage";
 import { useUpdateToken } from "./hooks/HttpUpdateTokenHook/http.update";
 import { onMount } from "solid-js";
-import { ProfilePage } from "./Page/ProfilePage/ProfilePage";
+import { ProfilePage } from "./page/ProfilePage/ProfilePage";
 import { getUser } from "../store/UserStore/user.store";
-import { PasswordPage } from "./Page/PasswordPage/PasswordPage";
-import { UserSettingsPage } from "./Page/UserSettingsPage/UserSettingsPage";
+import { PasswordPage } from "./page/PasswordPage/PasswordPage";
+import { UserSettingsPage } from "./page/UserSettingsPage/UserSettingsPage";
 import { getLoading } from "../store/LoadingStore/loading.store";
 
 const GlobalRouter = () => {

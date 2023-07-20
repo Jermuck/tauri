@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, Inject, Param, UseGuards } from "@nestjs/common";
 import { BodyCanActivate } from "../auth/dto/user.register.dto";
 import { AuthGuard } from "src/infrastructure/common/guards/auth.guard";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { MessageParam } from "./dto/message.dto";
 import { MessageUseCaseModule } from "src/use-cases/message-usecases/message.usecase-proxy";
 import { MessageUseCase } from "src/use-cases/message-usecases/usecase-blocks/message.usecase";
@@ -22,6 +22,7 @@ export class MessageController{
         status: 200,
         type: [IMessageResponse]
     })
+    @ApiBearerAuth('access-token')
     @ApiOperation({ description: 'Get messages by user'})
     public async getMessages(
         @Param() param: MessageParam, 
@@ -37,6 +38,7 @@ export class MessageController{
         status: 200,
         type: [UserOpenRoomResponse]
     })
+    @ApiBearerAuth('access-token')
     @ApiOperation({description: 'Get open messages transaction'})
     public async getRooms(@Body() dto: BodyCanActivate){
         return await this.messageUseCaseInstance.getRoomsWithLastMessage(dto._id);

@@ -1,4 +1,4 @@
-import { ISign } from "../src/Page/AuthPage/AuthPage";
+import { ISign } from "../src/page/AuthPage/AuthPage";
 import { IMyMessage } from "../src/UI/MyMessage/MyMessage";
 
 export interface IUserModel {

@@ -6,6 +6,7 @@ import {
   SubscribeMessage,
   MessageBody,
   ConnectedSocket,
+  OnGatewayDisconnect,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { ChatUseCase } from "src/use-cases/tcp-usecases/usecase-blocks/chat.usecase";
@@ -17,9 +18,9 @@ import { WsResponse } from "types/index.types";
 import { DeleteRoomDto } from "./dto/room.dto";
 
 @WebSocketGateway(8080, {
-  cors: '*'
+  cors: 'localhost:1420'
 })
-export class ChatGateway implements OnGatewayConnection {
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     @Inject('CHAT_TCP')
     private readonly tcpUseCaseInstance: ChatUseCase
@@ -74,4 +75,8 @@ export class ChatGateway implements OnGatewayConnection {
     if (!userId) this.setError('Unaftorized', client);
     client.data['id'] = userId;
   };
+
+  public handleDisconnect(client: Socket) {
+    client.data['id'] = null;
+  }
 }

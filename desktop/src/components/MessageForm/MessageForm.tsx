@@ -6,13 +6,20 @@ import { createEffect, createSignal, onMount } from "solid-js";
 import { IMyMessage } from "../../UI/MyMessage/MyMessage";
 import { CreateDtoMessage, IDeleteRoomDto, IDeleteRoomResponse, ISocketMessageResponse } from "../../../types/index.types";
 import { getAsyncMessages } from "./HttpHookForGetMessages/hook.http";
-import { socket } from "../../Page/HomePage/HomePage";
 import { getRooms, setMessageByRoom, setMessageRoomIncludeDelete } from "../../../store/openRoomStore/room.store";
 import { getUser } from "../../../store/UserStore/user.store";
+import { io } from "socket.io-client";
+
 
 export const MessageForm = () => {
   const [getMessages, setMessages] = createSignal<IMyMessage[]>([]);
   const [getValue, setValue] = createSignal<string>('');
+
+  const socket = io('http://localhost:8080', {
+    extraHeaders: {
+      Authorization: `Bearer ${localStorage.getItem('access')}`
+    }
+  });
 
   function createMessage(msg: string) {
     if (msg.length === 0) return;
@@ -43,7 +50,10 @@ export const MessageForm = () => {
     setCompanion(null);
   });
 
+  socket.on('error', e => console.log(e))
+
   createEffect(async () => {
+    console.log(socket.connected)
     if (!getCompanion()?.id) return;
     //@ts-ignore
     const messages = await getAsyncMessages(getCompanion()?.id);
