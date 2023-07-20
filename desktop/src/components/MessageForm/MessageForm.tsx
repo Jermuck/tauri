@@ -1,6 +1,5 @@
 import { Box, Button, Image, Input, Text } from "@hope-ui/solid";
-import { getCompanion } from "../../../store/CompanionStore/companion.store";
-import { Circle } from "./images/Circle";
+import { getCompanion, setCompanion } from "../../../store/CompanionStore/companion.store";
 import Attach from "./images/Attach.svg";
 import { Chat } from "../Chat/chat";
 import { createEffect, createSignal, onMount } from "solid-js";
@@ -14,7 +13,6 @@ import { getUser } from "../../../store/UserStore/user.store";
 export const MessageForm = () => {
   const [getMessages, setMessages] = createSignal<IMyMessage[]>([]);
   const [getValue, setValue] = createSignal<string>('');
-  const [getIsSuccessDelete, setIsSuccessDelete] = createSignal<boolean>(false);
 
   function createMessage(msg: string) {
     if (msg.length === 0) return;
@@ -41,8 +39,8 @@ export const MessageForm = () => {
   });
 
   socket.on('room', (msg: ISocketMessageResponse<IDeleteRoomResponse>) => {
-    console.log("Da")
     setMessageRoomIncludeDelete(msg.data);
+    setCompanion(null);
   });
 
   createEffect(async () => {
@@ -52,15 +50,20 @@ export const MessageForm = () => {
     setMessages(messages);
   });
 
-  function deleteRoom(): void {
+  async function deleteRoom(): Promise<void> {
     const room = getRooms().find(room => room.id === getCompanion()?.id);
     if (!room?.roomId) return;
-    const deletRoomDto: IDeleteRoomDto = {
+    const deleteRoomDto: IDeleteRoomDto = {
       roomId: room.roomId,
       //@ts-ignore
       conversationId: getCompanion()?.id
     };
-    socket.emit('deleteRoom', deletRoomDto);
+    socket.emit('deleteRoom', deleteRoomDto);
+    setMessageRoomIncludeDelete({
+      conversationRoomId: deleteRoomDto.roomId,
+      userRoomId: deleteRoomDto.roomId
+    });
+    setCompanion(null);
   };
 
   return (
@@ -69,19 +72,6 @@ export const MessageForm = () => {
       height={'100vh'}
       position={'relative'}
     >
-      {getIsSuccessDelete() &&
-        <Box
-          color={'#3369F3'}
-          position={'absolute'}
-          top={'50%'}
-          left={'50%'}
-          marginLeft={-100}
-          width={200}
-          textAlign={'center'}
-        >
-          Success Delete
-        </Box>
-      }
       {
         !getCompanion() ?
           <Box color={'#FFF'} left={'50%'} transform={'translate(-50%)'} top={'50%'} position={'absolute'}>Выберите чат чтобы отправить сообщение</Box>
@@ -101,19 +91,7 @@ export const MessageForm = () => {
             >
               <Box width={50} height={50} borderRadius={25} backgroundColor={'#343A4F'} marginLeft={20} />
               <Text color={'#E2E2E4'} fontSize={18} marginLeft={20}>{getCompanion()?.username}</Text>
-              <Box
-                width={20}
-                height={20}
-                display={'flex'}
-                justifyContent={'center'}
-                alignItems={'center'}
-                position={'absolute'} 
-                left={'96%'} 
-                cursor={'pointer'} 
-                onClick={deleteRoom}
-              >
-                <Circle/>
-              </Box>
+              <Button marginLeft={700} backgroundColor={'rgb(51, 105, 249)'} onClick={deleteRoom}>Delete</Button>
             </Box>
             <Chat messages={getMessages} />
             <Box

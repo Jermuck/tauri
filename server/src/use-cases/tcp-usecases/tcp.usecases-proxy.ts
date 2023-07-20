@@ -4,11 +4,11 @@ import { RepositoryModule } from "src/infrastructure/repositories/repository.mod
 import { UserRepository } from "src/infrastructure/repositories/users-repository/users.reposiory";
 import { TcpAdapterModule } from "src/infrastructure/services/tsp-service/tcp.module";
 import { TcpService } from "src/infrastructure/services/tsp-service/tcp.service";
-import { TcpUseCase } from "./usecase-blocks/tcp.usecase";
+import { ChatUseCase } from "./usecase-blocks/chat.usecase";
 import { RoomRepository } from "src/infrastructure/repositories/room-repository/room.repository";
 
 export class TcpUseCaseModule {
-  static TCP = 'TCP';
+  static TCP = 'CHAT_TCP';
   static register(): DynamicModule {
     return {
       exports: [this.TCP],
@@ -21,7 +21,7 @@ export class TcpUseCaseModule {
             userRepo: UserRepository,
             messageRepo: MessageRepository,
             roomRepo: RoomRepository
-          ) => new TcpUseCase(tcpService, userRepo, messageRepo, roomRepo),
+          ) => new ChatUseCase(tcpService, userRepo, messageRepo, roomRepo),
           provide: this.TCP
         }
       ],

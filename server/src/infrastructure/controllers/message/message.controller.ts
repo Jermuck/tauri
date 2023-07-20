@@ -1,18 +1,18 @@
-import { Body, Controller, Delete, Get, HttpCode, Inject, Param, UseGuards } from "@nestjs/common";
-import { TcpUseCase } from "src/use-cases/tcp-usecases/usecase-blocks/tcp.usecase";
+import { Body, Controller, Get, HttpCode, Inject, Param, UseGuards } from "@nestjs/common";
 import { BodyCanActivate } from "../auth/dto/user.register.dto";
 import { AuthGuard } from "src/infrastructure/common/guards/auth.guard";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { IMessageResponse, UserOpenRoomResponse } from "src/use-cases/tcp-usecases/response-data/response.interface";
 import { MessageParam } from "./dto/message.dto";
-import { RoomParamDto } from "./dto/room.dto";
+import { MessageUseCaseModule } from "src/use-cases/message-usecases/message.usecase-proxy";
+import { MessageUseCase } from "src/use-cases/message-usecases/usecase-blocks/message.usecase";
+import { IMessageResponse, UserOpenRoomResponse } from "src/use-cases/message-usecases/response-data/response.interface";
 
 @Controller('/messages')
 @ApiTags('Message')
 export class MessageController{
     constructor(
-        @Inject('TCP')
-        private readonly tcpInstance: TcpUseCase
+        @Inject(MessageUseCaseModule.MESSAGE_USECASE)
+        private readonly messageUseCaseInstance: MessageUseCase
     ){};
 
     @Get('/all/:conversationId')
@@ -27,7 +27,7 @@ export class MessageController{
         @Param() param: MessageParam, 
         @Body() dto: BodyCanActivate
     ){
-        return await this.tcpInstance.getMessages(dto._id, +param.conversationId);
+        return await this.messageUseCaseInstance.getMessages(dto._id, +param.conversationId);
     };
 
     @Get('/rooms')
@@ -39,7 +39,7 @@ export class MessageController{
     })
     @ApiOperation({description: 'Get open messages transaction'})
     public async getRooms(@Body() dto: BodyCanActivate){
-        return await this.tcpInstance.getRoomsWithLastMessage(dto._id);
+        return await this.messageUseCaseInstance.getRoomsWithLastMessage(dto._id);
     };
 
 };
