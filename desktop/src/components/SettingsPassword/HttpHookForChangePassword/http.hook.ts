@@ -15,7 +15,7 @@ export const useChangePassword = (): IChangePassword => {
   const nav = useNavigate();
 
   const validate = (data: IPassword): boolean => {
-    if (Object.values(data).length < 3) return false;
+    if (Object.values(data).length !== 3) return false;
     return data?.newPassword === data?.repeatPassword
   }
 
@@ -39,6 +39,7 @@ export const useChangePassword = (): IChangePassword => {
     } catch (err: any) {
       setLoading(false)
       const { response } = err as AxiosError;
+      console.log(response.data.message)
       if (response.data.statusCode === 400) {
         showError(response.data.message);
       }

@@ -6,9 +6,10 @@ import { createEffect, createSignal, onMount } from "solid-js";
 import { IMyMessage } from "../../UI/MyMessage/MyMessage";
 import { CreateDtoMessage, IDeleteRoomDto, IDeleteRoomResponse, ISocketMessageResponse } from "../../../types/index.types";
 import { getAsyncMessages } from "./HttpHookForGetMessages/hook.http";
-import { getRooms, setMessageByRoom, setMessageRoomIncludeDelete } from "../../../store/openRoomStore/room.store";
+import { getRooms, setMessageByRoom, setMessageRoomIncludeDelete, setMessageRoomWhenSearchHaveLength } from "../../../store/OpenRoomStore/room.store";
 import { getUser } from "../../../store/UserStore/user.store";
 import { io } from "socket.io-client";
+import { getSearch } from "../../../store/GlobalInputSearch/globalSearch.store";
 
 
 export const MessageForm = () => {
@@ -50,10 +51,7 @@ export const MessageForm = () => {
     setCompanion(null);
   });
 
-  socket.on('error', e => console.log(e))
-
   createEffect(async () => {
-    console.log(socket.connected)
     if (!getCompanion()?.id) return;
     //@ts-ignore
     const messages = await getAsyncMessages(getCompanion()?.id);
@@ -69,10 +67,15 @@ export const MessageForm = () => {
       conversationId: getCompanion()?.id
     };
     socket.emit('deleteRoom', deleteRoomDto);
-    setMessageRoomIncludeDelete({
+    const objectDeleteRoom = {
       conversationRoomId: deleteRoomDto.roomId,
       userRoomId: deleteRoomDto.roomId
-    });
+    }
+    if(getSearch().length === 0){
+      setMessageRoomIncludeDelete(objectDeleteRoom);
+    }else{
+      setMessageRoomWhenSearchHaveLength(objectDeleteRoom)
+    }
     setCompanion(null);
   };
 
@@ -98,10 +101,13 @@ export const MessageForm = () => {
               backgroundColor={'#252838'}
               display={'flex'}
               alignItems={'center'}
+              justifyContent={'space-between'}
             >
-              <Box width={50} height={50} borderRadius={25} backgroundColor={'#343A4F'} marginLeft={20} />
-              <Text color={'#E2E2E4'} fontSize={18} marginLeft={20}>{getCompanion()?.username}</Text>
-              <Button marginLeft={700} backgroundColor={'rgb(51, 105, 249)'} onClick={deleteRoom}>Delete</Button>
+              <Box display={'flex'} alignItems={'center'} width={400} marginLeft={20}>
+                <Box width={50} height={50} borderRadius={25} backgroundColor={'#343A4F'} />
+                <Text color={'#E2E2E4'} fontSize={18} marginLeft={20}>{getCompanion()?.username}</Text>
+              </Box>
+              <Button backgroundColor={'rgb(51, 105, 249)'} onClick={deleteRoom} marginRight={20}>Delete</Button>
             </Box>
             <Chat messages={getMessages} />
             <Box
@@ -110,19 +116,22 @@ export const MessageForm = () => {
               backgroundColor={'#252838'}
               display={'flex'}
               alignItems={'center'}
+              justifyContent={'space-between'}
             >
-              <Image src={Attach} marginLeft={20} />
-              <Input
-                width={600}
-                border={'none'}
-                boxShadow={'none'}
-                placeholder={'message...'}
-                color={'#FFF'}
-                marginLeft={30}
-                value={getValue()}
-                onInput={element => setValue(element.target.value)}
-              />
-              <Button backgroundColor={'#3369F9'} marginLeft={190} onClick={() => createMessage(getValue())}>Send</Button>
+              <Box display={'flex'} alignItems={'center'} width={800} marginLeft={20}>
+                <Image src={Attach}/>
+                <Input
+                  width={600}
+                  border={'none'}
+                  boxShadow={'none'}
+                  placeholder={'message...'}
+                  color={'#FFF'}
+                  marginLeft={30}
+                  value={getValue()}
+                  onInput={element => setValue(element.target.value)}
+                />
+              </Box>
+              <Button backgroundColor={'#3369F9'} onClick={() => createMessage(getValue())} marginRight={20}>Send</Button>
             </Box>
 
           </Box>

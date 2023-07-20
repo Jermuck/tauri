@@ -2,6 +2,7 @@ import { useNavigate } from "@solidjs/router";
 import { setLoading } from "../../../../store/LoadingStore/loading.store";
 import { setUser } from "../../../../store/UserStore/user.store";
 import { AuthController } from "../../../http/controllers/AuthController/auth.controller"
+import { setProfile } from "../../../../store/ProfileStore/profile.store";
 
 type MyFunc = () => Promise<void>;
 
@@ -14,6 +15,7 @@ export const useLogout = (): MyFunc => {
       const instance = AuthController.getInstance();
       await instance.logout();
       setUser(null)
+      setProfile(null);
       localStorage.removeItem('access');
       setLoading(false);
       nav('/');

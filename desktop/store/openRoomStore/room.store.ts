@@ -35,4 +35,12 @@ export const setMessageRoomIncludeDelete = (data: IDeleteRoomResponse) => {
             return client;
         };
     }))
+};
+
+export const setMessageRoomWhenSearchHaveLength = (data: IDeleteRoomResponse) => {
+    const isExistRoom = room.rooms.find(client => client.roomId === data.userRoomId && client.roomId === data.conversationRoomId);
+    const includeRooms = room.rooms.filter(el => el.id !== isExistRoom?.id);
+    //@ts-ignore
+    includeRooms.push({id: isExistRoom?.id, username: isExistRoom?.username})
+    setStoreRooms('rooms', includeRooms)
 }

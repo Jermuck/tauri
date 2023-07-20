@@ -5,7 +5,8 @@ import { getAsyncUsers } from "./HttpHookForGetUsers/http.hook";
 import { Box, Input, Image } from "@hope-ui/solid";
 import Polygon from "./images/Polygon.svg";
 import { useOpenRoomsFilter } from "./useOpenRoomsFilter";
-import { getRooms, setRooms } from "../../../store/openRoomStore/room.store";
+import { getRooms, setRooms } from "../../../store/OpenRoomStore/room.store";
+import { setSearch } from "../../../store/GlobalInputSearch/globalSearch.store";
 
 export const ChatPanel = () => {
   const nav = useNavigate();
@@ -21,6 +22,7 @@ export const ChatPanel = () => {
   });
 
   async function usersHandler(searchParam: string): Promise<void> {
+    setSearch(searchParam);
     if (!searchParam.length) {
       const openRooms = await getOpenRoomsWithFilter();
       setRooms(convertToIUserListItem(openRooms));
