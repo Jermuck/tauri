@@ -1,7 +1,5 @@
 {
-    "k8s": false,
-    "add inteceptor": true,
-    "clear room": false,
-    "add 'Enter' send message": true,
-    "add scroll in chat list": true
+    "verstka": true,
+    "chat error with delete conversation": true,
+    "add photo": false
 }
