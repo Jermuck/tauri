@@ -10,6 +10,7 @@
   Git
   Unit-Test
   Swagger
+  SolidJs
 
 # Env example
   PORT = 4444
