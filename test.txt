@@ -1,0 +1,25 @@
+#резюме #вакансия #backend
+Формат работы: удаленка
+Занятость: полная
+Ожидания по зарплате: от 70000 руб.
+Опыт: 6 месяцев работы на фрилансе
+Стек: NestJs, ReactJs
+
+Готов изучать новые технологии. Есть желание постоянно развиваться и совершенствоваться. Обучался долго и успел попробовать множество сфер.
+
+Навыки: 
+- Хорошее понимание: NodeJs, NestJs, Express, TypeScript, Prisma, TypeOrm, ReactJs, PostgreSQL, Docker, SocketIO
+- Общепринятые практики: ООП, SOLID, Clean Architecture, KISS
+- Авторизацией и аутентификацией.
+- Базами данных: MYSQL, PostgreSQL, MongoDB
+- Swagger, Postman
+- Unit тестирование, например с использованием Jest
+- Github
+- Базовое знание английского языка (A2)
+
+Ссылка на полное резюме с реализованными проектами: https://resume.io/r/Ehq2mLGTT
+GitHub: https://github.com/Jermuck
+
+Контакты для связи:
+Telegram: @JermuckS
+E-Mail: k.bardyugov@yandex.ru
