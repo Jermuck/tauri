@@ -11,6 +11,8 @@
   Unit-Test
   Swagger
   SolidJs
+  Axios
+  Socket.IO
 
 # Env example
   PORT = 4444
@@ -38,6 +40,3 @@
 
 # Prisma studio - npm run studio
 
-# Example wss
-  handleConnect => set data.id = user.id;
-  onMessage => foreach(el => el.data.id === payload.conversation.id - el.send(payload))
